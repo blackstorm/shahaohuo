@@ -14,6 +14,7 @@ spec:
     metadata:
       labels:
         app: shahaohuo-server
+      restartPolicy: Always
       containers:
         - name: shahaohuo-server
           image: docker.pkg.github.com/blackstorm/shahaohuo/server:latest
@@ -43,7 +44,7 @@ spec:
             - containerPort: 8080
               name: http
               protocol: TCP
-      restartPolicy: Always
+
 ---
 apiVersion: v1
 kind: Service
