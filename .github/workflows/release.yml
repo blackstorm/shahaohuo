@@ -22,11 +22,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: checkout version
         run: |
           cd ./deployments/server
-          ./version.sh k3s.yaml ${{ jobs.package.steps.get_version.outputs.VERSION }}
-          cat k3s.yaml
+          ./version.sh k3s.yaml ${{ steps.get_version.outputs.VERSION }}
       - name: release to k3s
         uses: steebchen/kubectl@master
         env:
