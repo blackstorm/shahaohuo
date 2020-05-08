@@ -11,6 +11,8 @@ WORKDIR /opt/shahaohuo/
 
 COPY --from=BUILD /opt/shahaohuo/server .
 COPY --from=BUILD /opt/shahaohuo/configs/server/${APP_ENV:-prod}.yaml ./configs/
-COPY --from=BUILD /opt/shahaohuo/web/server/* ./resources/
+COPY --from=BUILD /opt/shahaohuo/web/server/ ./resources/
+
+RUN ls -la /opt/shahaohuo/*
 
 ENTRYPOINT ["/opt/shahaohuo/server"]

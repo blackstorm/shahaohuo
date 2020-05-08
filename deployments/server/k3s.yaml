@@ -40,6 +40,8 @@ spec:
           value: /opt/shahaohuo/resources
         - name: CONFIG_PATH
           value: /opt/shahaohuo/configs/prod.yaml
+        - name: GIN_MODE
+          value: release
         ports:
         - containerPort: 8080
           name: http
