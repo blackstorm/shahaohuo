@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    {{ template "head"}}
+    <title>啥好货 - 分享实用,好用,可长期使用的好物</title>
+    <meta name=description content="啥好货 shahaohuo.com 由社区驱动的分享实用，好用，耐用的产品平台">
+    <meta name="keywords" content="啥好货,shahaohuo,推荐,实用,好用,耐用,机械键盘,蓝牙耳机">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="root">
+        <div class="wapper">
+            {{ template "nav" }}
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="slogan text-center">
+                            <h1>啥好货</h1>
+                            <p>想跟大家分享自己喜欢的产品，分享快乐</p>
+                            <p>共有 <i class="fa fa-user"></i> {{ .Statics.Counts.TotalUsers }} 个用户，分享了 <i class="fa fa-image"></i> {{ .Statics.Counts.TotalHaohuos }} 件好货</p>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sub-title">最新好货</h3>
+                        </div>
+                    </div>
+                <div class="hbox" id="news">
+                    <div class="row">
+                        {{ template "card" .NewHaohuos}}
+                    </div>
+                </div>
+                {{ if .MostFavorite }}
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="sub-title">今日最多收藏</h3>
+                    </div>
+                </div>
+                <div class="hbox" id="most-favorite">
+                    <div class="row">
+                        {{ template "card" .MostFavorite }}
+                    </div>
+                </div>
+                {{end}}
+                {{if .LatestUsers}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sub-title">最新注册的用户</h3>
+                        </div>
+                    </div>
+                    <div class="hbox" id="latest-users">
+                        <div class="row">
+                                <div class="col-md-12">
+                                    {{ range .LatestUsers }}
+                                        <a href="/users/{{ .Id }}" class="card-link user main-color">{{ .Name }}</a>
+                                    {{end}}
+                                </div>
+                        </div>
+                    </div>
+                {{end}}
+            </div>
+            {{ template "footer" }}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/combine/npm/way-js@0.2.1,npm/moment@2.24.0/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
+    <script src="/static/nav.js"></script>
+    <script>
+        Object.defineProperty(String.prototype, 'hashCode', {
+            value: function() {
+                var hash = 0, i, chr;
+                for (i = 0; i < this.length; i++) {
+                    chr   = this.charCodeAt(i);
+                    hash  = ((hash << 5) - hash) + chr;
+                    hash |= 0; // Convert to 32bit integer
+                }
+                return hash;
+            }
+        });
+        $( document ).ready(function() {
+            // ws
+            const socket = new WebSocket('ws://' + window.location.host + '/ws');
+            let preHash = undefined;
+            socket.addEventListener('message', function (event) {
+                let hash = event.data.hashCode();
+                if (preHash !== hash) {
+                    preHash = hash;
+                    const hs = JSON.parse(event.data);
+                    let elements = "";
+                    hs.forEach(it => {
+                        const date = moment(it.created_at).format('YYYY/MM/DD');
+                        elements += "<div class='col-md-3'>" +
+                            "<div class='card'>"+
+                            "<a href='/haohuo/" + it.id + "'><img src='" + it.image_url + "' class='card-img-top' /></a>" +
+                            "<div class='card-body'>"+
+                            "<a class='h-name' href='/haohuo/" + it.id + "'><h5 class='card-title'>" + it.name + "</h5></a>"+
+                            "<p class='card-text description' title='"+ it.description +"'>" + it.description +"</p>"+
+                            "</div>"+
+                            "<div class='card-body'>" +
+                            "<a href='/users/"+it.user_id +"' class='card-link user main-color'>" + it.user_name + "</a>" +
+                            "<span class='created-at second-color'>分享于 " + date  + "</span>"+
+                            "<span class='stars main-color' onclick='onStarClick(this.id); return false' id='"+it.id + "'><i class='fa fa-star'></i> " + it.favorites + "</span>" +
+                            "</div>"+
+                            "</div>"+
+                            "</div>";
+                    });
+                    $("#news .row").html(elements)
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+on:
+  release:
+    types: [published]
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # https://github.community/t5/GitHub-Actions/How-to-get-just-the-tag-name/m-p/32167#M1027
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Login to github pkg
+        run: docker login docker.pkg.github.com --username blackstorm --password ${{ secrets.GITHUB_TOKEN }}
+      - name: Build image
+        run: |
+          docker build . --file ./build/server/Dockerfile --build-arg APP_ENV=prod --tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:${{ steps.get_version.outputs.VERSION }}
+          docker push docker.pkg.github.com/$GITHUB_REPOSITORY/server:${{ steps.get_version.outputs.VERSION }}
+  release:
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: checkout version
+        run: |
+          cd ./deployments/server
+          ./version.sh k3s.yaml ${{ jobs.package.steps.get_version.outputs.VERSION }}
+          cat k3s.yaml
+      - name: release to k3s
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.17.5"
+        with:
+          args: '"apply -f k3s.yaml"'

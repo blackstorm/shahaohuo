@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    {{ template "head"}}
+    <title>登录 / 注册 - 啥好货 shahaohuo.com </title>
+    <style>
+        .main {
+            padding-top: 4rem;
+            padding-bottom: 2rem;
+        }
+        #login-alert, #register-alert, #register-success-alert {
+            display: none;
+        }
+        .form-title {
+            padding-bottom: 1rem;
+            color: #cf7500;
+        }
+        footer {
+            padding-top: 2rem;
+        }
+
+        footer a {
+            color: #ccc;
+        }
+    </style>
+
+    <script>
+
+    </script>
+</head>
+<body>
+    <div id="root">
+        <div class="wapper">
+            <div class="container">
+                <div class="main">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h2 class="form-title">登录</h2>
+                            <div class="alert alert-warning" id="login-alert" role="alert"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form id="login">
+                                        <div class="form-group">
+                                            <label for="username">用户名</label>
+                                            <input name="username" id="username" type="text" class="form-control" placeholder="请输入用户名">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password">密码</label>
+                                            <input name="password" id="password" type="password" class="form-control"  placeholder="请输入密码">
+                                        </div>
+                                        <button type="submit" id="login-btn" class="btn btn-primary">登录</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h2 class="form-title">注册</h2>
+                            <div class="alert alert-warning" id="register-alert" role="alert"></div>
+                            <div class="alert alert-success" id="register-success-alert" role="alert"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form id="register">
+                                        <div class="form-group">
+                                            <label for="rUsername">用户名</label>
+                                            <input name="rUsername" id="rUsername" type="text" maxlength="12" class="form-control" placeholder="请输入用户名">
+                                            <small class="form-text text-muted">仅支持英文,用户名最大长度12个，昵称可稍后进行设置。</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="rPassword">密码</label>
+                                            <input name="rPassword" id="rPassword" type="password" class="form-control" maxlength="18" minlength="8" placeholder="请输入密码">
+                                            <small class="form-text text-muted">密码最大长度18。</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="crPassword">重复密码</label>
+                                            <input type="password" name="crPassword" id="crPassword" class="form-control" maxlength="18" minlength="8" placeholder="请重复密码">
+                                        </div>
+                                        <button type="submit" id="register-btn" class="btn btn-primary">注册</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center">
+            <a href="/">返回首页</a>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+    <script>
+        const validateMessage = {
+            username: {
+                required: "请输入用户名",
+                minlength: "用户名最小长度为1",
+                maxlength: "用户名最大长度为12"
+            },
+            password: {
+                required: "请输入密码",
+                minlength: "密码最小长度为 8 ",
+                maxlength: "密码最大长度为16"
+            },
+        };
+
+        const validateRules = {
+            username: {
+                required: true,
+                minlength: 1,
+                maxlength: 12
+            },
+            password: {
+                required: true,
+                minlength: 6,
+                maxlength: 18
+            },
+        };
+
+        const api = {
+            login: function (data, success, error) {
+                $.ajax({
+                    type: "POST",
+                    url: "/open/api/v1/login",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: success,
+                    error: error
+                });
+            },
+            register: function (data, success, error) {
+                $.ajax({
+                    type: "POST",
+                    url: "/open/api/v1/register",
+                    contentType: "application/json",
+                    content: "json",
+                    data: JSON.stringify(data),
+                    success: success,
+                    error: error
+                });
+            },
+        };
+
+        $().ready(function() {
+            // 登录表单事件
+            $("#login").validate({
+                rules: validateRules,
+                messages: {
+                    username: validateMessage.username,
+                    password: validateMessage.password,
+                },
+                submitHandler: function(form, event) {
+                    event.preventDefault();
+                    const btn = $("#login-btn")
+                    btn.prop('disabled', true);
+                    api.login({id: form.username.value, password: form.password.value}, function (resp) {
+                        localStorage.setItem("user", JSON.stringify(resp))
+                        window.location = "/"
+                    }, function (errors) {
+                        btn.prop('disabled', false);
+                        const alert = $("#login-alert");
+                        if (errors.status === 401 && errors.responseJSON.code === 1) {
+                            alert.show().html("用户名或密码错误")
+                        } else {
+                            alert.show().html(errors.responseJSON.error)
+                        }
+                    });
+                    return false;
+                }
+            });
+
+            // 注册事件
+            $("#register").validate({
+                rules: {
+                    rUsername: validateRules.username,
+                    rPassword: validateRules.password,
+                    crPassword: {
+                        required: true,
+                        minlength: 8,
+                        maxlength: 18,
+                        equalTo : "#rPassword"
+                    }
+                },
+                messages: {
+                    rUsername: validateMessage.username,
+                    rPassword: validateMessage.password,
+                    crPassword: {
+                        required: "请再次密码",
+                        minlength: "密码最小长度为 8",
+                        maxlength: "密码最大长度为16",
+                        equalTo: "两次输入密码不匹配",
+                    },
+                },
+                submitHandler: function(form, event) {
+                    event.preventDefault();
+                    const btn = $("#register-btn");
+                    btn.prop('disabled', true);
+                    var alert = $("#register-alert");
+                    alert.hide();
+                    api.register({id: form.rUsername.value, password: form.rPassword.value}, function (resp) {
+                        alert = $("#register-success-alert");
+                        alert.show().html("注册成功！请登录。")
+                        $("#register :input").prop("disabled", true);
+                    }, function (errors) {
+                        btn.prop('disabled', false);
+                        if (errors.status === 400 && errors.responseJSON.code === 1) {
+                            alert.show().html("用户名已被注册")
+                        } else {
+                            alert.show().html(errors.responseJSON.error)
+                        }
+                    });
+                    return false;
+                }
+            });
+            // 注册表单事件
+        });
+    </script>
+</body>
+</html>

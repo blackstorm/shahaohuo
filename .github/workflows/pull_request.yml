@@ -1,0 +1,19 @@
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.community/t5/GitHub-Actions/get-action-job-id/td-p/43276#
+      # https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
+      - uses: actions/checkout@v2
+      - name: login to github pkg
+        run: docker login docker.pkg.github.com --username blackstorm --password ${{ secrets.GITHUB_TOKEN }}
+      - name: package publish image
+        run: |
+          docker build . --file ./build/server/Dockerfile --build-arg APP_ENV=prod --tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:latest
+          docker push docker.pkg.github.com/$GITHUB_REPOSITORY/server:latest

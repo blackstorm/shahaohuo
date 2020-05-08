@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    {{ template "head"}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <title>{{ .User.Name }} - 啥好货</title>
+</head>
+<body>
+<div class="root">
+    <div class="wrapper">
+        {{ template "nav" }}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="slogan text-center">
+                        <h1>{{ .User.Name }}</h1>
+                        <p>注册于 {{ .User.CreatedAt.Format "2006/01/02" }}</p>
+                    </div>
+                </div>
+            </div>
+            {{ if .Haohuos }}
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="sub-title">{{ .User.Name }}的分享</h3>
+                    </div>
+                </div>
+                <div class="hbox" id="most-favorite">
+                    <div class="row">
+                        {{ template "card" .Haohuos }}
+                    </div>
+                </div>
+            {{end}}
+            {{ if .Comments }}
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="sub-title">最近的评论</h3>
+                    </div>
+                </div>
+                {{ range .Comments}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="main-color font-medium" href="/haohuo/{{.HaohuoId}}">{{.HaohuoName}}</a>
+                            <br>
+                            <time class="second-color font-mini">{{.CreatedAt.Format "2006/01/02"}}</time><br>
+                            <p class="pd-bt-1 full-description">{{.Content}}</p>
+                        </div>
+                    </div>
+                {{end}}
+            {{end}}
+        </div>
+        {{template "footer" }}
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
+<script src="/static/nav.js"></script>
+</body>
+</html>

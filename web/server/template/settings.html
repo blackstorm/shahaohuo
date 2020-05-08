@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    {{ template "head"}}
+    <title>设置 - 啥好货</title>
+    <style>
+        .title {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="wrapper">
+            {{ template "nav" }}
+            <div class="container">
+                <div id="settings">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="title main-color">设置</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <form id="basic-form">
+                                <div class="form-group">
+                                    <label for="id">ID</label>
+                                    <input name="id" id="id" type="text" class="form-control" min="1" maxlength="12" value="{{ .User.Id}}" disabled>
+                                </div>
+                                <button type="submit" id="login-btn" class="btn btn-primary" disabled>保存</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="text-center">啥好货 2020 build in bad time for love and hop. 广告 - 商务 - 帮助</footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+    <script src="/static/nav.js"></script>
+</body>
+</html>

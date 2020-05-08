@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    {{ template "head"}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <title>{{ .Haohuo.Name }} - 啥好货</title>
+    <meta name="haohuo-id" content="{{.Haohuo.Id}}">
+    <meta name="description" content="{{printf "%.120s" .Haohuo.Description}}" />
+    <meta name="keywords" content="{{ BaseKeyWorlds .Haohuo.Name .Tags }}" />
+    <style>
+        .haohuo-detail {
+            max-width: 960px;
+            margin: auto;
+        }
+        .haohuo-detail .sub-title {
+            padding-bottom: .8rem;
+        }
+        .haohuo-detail .description {
+            max-height: max-content;
+        }
+        .haohuo-detail .description p{
+            margin-bottom: 0;
+        }
+        .images {
+            display: flex;
+            justify-content: center;
+        }
+        .images img {
+            max-width: 100%;
+        }
+        .favorite-user, .comment-edit, .comments {
+            width: 100%;
+            padding-top: 1rem;
+            padding-bottom: 2rem;
+        }
+        .favorite-user a, .comments a {
+            color: #cf7500;
+        }
+        .comment:first-child {
+            padding-top: 0;
+        }
+        .comment {
+            padding-top: 1.45rem;
+        }
+        .badge-main {
+            font-size: 14px;
+            padding: .3rem .4rem;
+            color: white;
+            background-color: #cf7500;
+        }
+        .badge-main:hover {
+            color: #fff;
+            background-color: #f0a500;
+        }
+    </style>
+</head>
+<body>
+<div class="root">
+    <div class="wrapper">
+        {{ template "nav" }}
+        <div class="container">
+            <div class="haohuo-detail">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="slogan text-center">
+                            <h1>{{ .Haohuo.Name }}</h1>
+
+                            <p><a class="main-color" href="/users/{{ .User.Id }}">{{ .User.Name }}</a> 分享于 <time>{{ .Haohuo.CreatedAt.Format "2006/01/02" }}</time>
+                                <span class="h-price">￥{{ .Haohuo.Price }}</span>
+                                <span class="stars main-color" onclick="onStarClick(this.id); return false" id="{{ .Haohuo.Id }}"><i class="fa fa-star"></i> {{ .Haohuo.Favorites }}</span></p>
+                            <p class="second-color font-mini">价格可能随时间波动，请注意分享日期的时效性</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="images">
+                            <img src="{{ .Haohuo.ImageUrl }}" alt="{{ .Name }}">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="description">
+                            <p>{{ .Haohuo.Description }}</p>
+                        </div>
+                        {{if .Tags}}
+                        <div class="tags">
+                                {{range .Tags}}
+                                    <a class="badge badge-main" href="/tags/{{.Id}}"><span >{{.Name}}</span></a>
+                                {{end}}
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+                {{ if .Comments }}
+                    <div class="row">
+                        <div class="comments">
+                            <div class="col-md-12">
+                                <h2 class="sub-title">评论家</h2>
+                            </div>
+                            <div class="col-md-12">
+                                {{range .Comments}}
+                                    <div class="comment">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <a href="/users/{{.UserId}}">{{.UserName}}</a><br/>
+                                                <time class="second-color font-mini">{{ .CreatedAt.Format "2006/01/02" }}</time>
+                                                <p style="white-space: pre-line">{{.Content}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{end}}
+                            </div>
+                        </div>
+                    </div>
+                {{end}}
+                <div class="row">
+                    <div class="comment-edit">
+                        <div class="col-md-12">
+                            <h3 class="sub-title">回复</h3>
+                            <form id="comment">
+                                <div class="form-group">
+                                    <textarea class="form-control" id="content" name="content" rows="3" minlength="1" maxlength="1024" placeholder="请输入评论"></textarea>
+                                </div>
+                                <button type="submit" id="submit-btn" class="btn btn-main">搞里头！</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {{ if .FavoriteUsers }}
+                <div class="row">
+                    <div class="favorite-user">
+                        <div class="col-md-12">
+                            <h3 class="sub-title">收藏家</h3>
+                        </div>
+                        <div class="col-md-12">
+                            {{range .FavoriteUsers}}
+                                <a href="/users/{{.UserId}}">{{.UserName}}</a>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </div>
+        {{template "footer" }}
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
+<script src="/static/nav.js?v0.0.1"></script>
+<script>
+    const id = "{{.Haohuo.Id}}";
+    $("#comment").validate({
+        rules: {
+            content: {
+                required: true,
+                minlength: 1,
+                maxlength: 9999999999,
+            },
+        },
+        messages: {
+            content: {
+                required: "请输入评论",
+                minlength: "评论最小长度为1",
+                maxlength: "名称最大长度为9999999999"
+            },
+        },
+        submitHandler: function (form, event) {
+            event.preventDefault();
+            const btn = $("#submit-btn");
+            btn.prop('disabled', true);
+
+            const errorAlert = function(erros) {
+                btn.prop('disabled', false);
+            };
+
+            api.comment(id, {content: form.content.value,}, function (res) {
+                btn.prop('disabled', false);
+                location.reload();
+            }, errorAlert)
+        }
+    });
+</script>
+</body>
+</html>
