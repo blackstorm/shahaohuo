@@ -41,7 +41,12 @@ func main() {
 	/*
 		gin server
 	*/
-	server := gin.Default()
+	server := gin.New()
+	server.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/status"},
+	}))
+	server.Use(gin.Recovery())
+
 	// max size 4m TODO is not working ?
 	server.MaxMultipartMemory = 4 << 20
 	//middleware

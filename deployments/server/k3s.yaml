@@ -19,6 +19,7 @@ spec:
       - name: shahaohuo-server
         image: registry.cn-hongkong.aliyuncs.com/shahaohuo/server:latest
         imagePullPolicy: Always
+#        restartPolicy: Always
         readinessProbe:
           httpGet:
             path: /status?from=k8s&type=readinessProbe
