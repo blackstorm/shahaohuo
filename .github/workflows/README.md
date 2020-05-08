@@ -1,3 +1,5 @@
+## on push
+```yaml
 on: [push]
 
 jobs:
@@ -10,3 +12,4 @@ jobs:
       - name: package image
         run: |
           docker build . --file ./build/server/Dockerfile --build-arg APP_ENV=dev --tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:$GITHUB_RUN_ID
+```

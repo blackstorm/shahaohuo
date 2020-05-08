@@ -1,6 +1,6 @@
 on:
   release:
-    types: [published]
+    types: [created]
 
 jobs:
   package:
@@ -13,10 +13,15 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Login to github pkg
         run: docker login docker.pkg.github.com --username blackstorm --password ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to aliyun pkg
+        run: docker login registry.cn-hongkong.aliyuncs.com --username ${{ secrets.ALIYUN_DOCKER_USERNAME }} --password ${{ secrets.ALIYUN_DOCKER_TOKEN }}
       - name: Build image
         run: |
-          docker build . --file ./build/server/Dockerfile --build-arg APP_ENV=prod --tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:${{ steps.get_version.outputs.VERSION }}
-          docker push docker.pkg.github.com/$GITHUB_REPOSITORY/server:${{ steps.get_version.outputs.VERSION }}
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          docker build . --file ./build/server/Dockerfile --build-arg APP_ENV=prod --tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION
+          docker push docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION
+          docker tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION registry.cn-hongkong.aliyuncs.com/shahaohuo/server:$VERSION
+          docker push registry.cn-hongkong.aliyuncs.com/shahaohuo/server:$VERSION
   release:
     needs: package
     runs-on: ubuntu-latest
@@ -33,6 +38,6 @@ jobs:
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.17.5"
+          KUBECTL_VERSION: "1.17"
         with:
-          args: '"apply -f k3s.yaml"'
+          args: apply -f ./deployments/server/k3s.yaml

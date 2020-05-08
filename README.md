@@ -11,3 +11,6 @@ https://colorhunt.co/**palette/179398
 
 # 相关版权
 https://pixabay.com/zh/photos/mars-mars-rover-space-travel-robot-67522/
+
+# 相关BUG
+当下 contained 拉取 github 镜像存在问题，更改为阿里云
