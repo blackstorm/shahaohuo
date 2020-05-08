@@ -6,7 +6,7 @@ RUN apk add --no-cache git mercurial \
     && GOOS=linux go build -o server cmd/server/main.go
 
 
-FROM debian:buster
+FROM debian:buster-slim
 ARG APP_ENV
 WORKDIR /opt/shahaohuo/
 COPY --from=BUILD /opt/shahaohuo/server .
