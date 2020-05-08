@@ -4,46 +4,46 @@ metadata:
   name: shahaohuo-server
   namespace: shahaohuo
   labels:
-    app: shahaohuo-server
+    shahaohuo-app: shahaohuo-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: shahaohuo-server
+      shahaohuo-app: shahaohuo-server
   template:
     metadata:
       labels:
-        app: shahaohuo-server
-      restartPolicy: Always
+        shahaohuo-app: shahaohuo-server
+    spec:
       containers:
-        - name: shahaohuo-server
-          image: docker.pkg.github.com/blackstorm/shahaohuo/server:latest
-          imagePullPolicy: Always
-          readinessProbe:
-            httpGet:
-              path: /status
-              port: http
-            initialDelaySeconds: 30
-            periodSeconds: 1
-          livenessProbe:
-            httpGet:
-              path: /status
-              port: http
-            initialDelaySeconds: 300
-            periodSeconds: 30
-            timeoutSeconds: 5
-          resources:
-            limits:
-              memory: 128Mi
-          env:
-            - name: RESOURCES_PATH
-              value: /opt/shahaohuo/resources
-            - name: CONFIG_PATH
-              value: /opt/shahaohuo/configs/prod.yaml
-          ports:
-            - containerPort: 8080
-              name: http
-              protocol: TCP
+      - name: shahaohuo-server
+        image: docker.pkg.github.com/blackstorm/shahaohuo/server:latest
+        imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: http
+          initialDelaySeconds: 100
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          limits:
+            memory: 64Mi
+        env:
+        - name: RESOURCES_PATH
+          value: /opt/shahaohuo/resources
+        - name: CONFIG_PATH
+          value: /opt/shahaohuo/configs/prod.yaml
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
 
 ---
 apiVersion: v1
@@ -51,12 +51,13 @@ kind: Service
 metadata:
   name: shahaohuo-server-service
   labels:
-    app: shahaohuo-server
+    shahaohuo-app: shahaohuo-server
   namespace: shahaohuo
 spec:
   ports:
-    - port: 80
-      targetPort: http
-      protocol: TCP
+  - port: 80
+    targetPort: http
+    protocol: TCP
   selector:
-    app: shahaohuo-server
+    shahaohuo-app: shahaohuo-server
+
