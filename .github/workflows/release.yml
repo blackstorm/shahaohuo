@@ -14,14 +14,14 @@ jobs:
       - name: Login to github pkg
         run: docker login docker.pkg.github.com --username blackstorm --password ${{ secrets.GITHUB_TOKEN }}
       - name: Login to aliyun pkg
-        run: docker login registry.cn-hangzhou.aliyuncs.com --username ${{ secrets.ALIYUN_DOCKER_USERNAME }} --password ${{ secrets.ALIYUN_DOCKER_TOKEN }}
+        run: docker login registry.cn-hongkong.aliyuncs.com --username ${{ secrets.ALIYUN_DOCKER_USERNAME }} --password ${{ secrets.ALIYUN_DOCKER_TOKEN }}
       - name: Build image
         run: |
           VERSION=${{ steps.get_version.outputs.VERSION }}
           docker build . --file ./build/server/Dockerfile --build-arg APP_ENV=prod --tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION
           docker push docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION
-          docker tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION registry.cn-hangzhou.aliyuncs.com/shahaohuo/server:$VERSION
-          docker push registry.cn-hangzhou.aliyuncs.com/shahaohuo/server:$VERSION
+          docker tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION registry.cn-hongkong.aliyuncs.com/shahaohuo/server:$VERSION
+          docker push registry.cn-hongkong.aliyuncs.com/shahaohuo/server:$VERSION
   release:
     needs: package
     runs-on: ubuntu-latest

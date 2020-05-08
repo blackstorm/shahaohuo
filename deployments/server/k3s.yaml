@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: shahaohuo-server
-        image: registry.cn-hangzhou.aliyuncs.com/shahaohuo/server:latest
+        image: registry.cn-hongkong.aliyuncs.com/shahaohuo/server:latest
         imagePullPolicy: Always
         readinessProbe:
           httpGet:
