@@ -33,6 +33,6 @@ jobs:
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.17.5"
+          KUBECTL_VERSION: "1.17"
         with:
           args: '"apply -f k3s.yaml"'
