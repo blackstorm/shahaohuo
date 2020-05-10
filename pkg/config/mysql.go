@@ -14,6 +14,8 @@ type MySQLConfig struct {
 	Database string
 	Params   string
 	ShowSQL  bool
+	MaxConns int
+	MinConns int
 }
 
 func (m MySQLConfig) Addr() string {
@@ -38,5 +40,7 @@ func NewMysqlConfig(configFilePath string, configType string) MySQLConfig {
 		Port:     mysql["port"].(int),
 		Database: mysql["database"].(string),
 		ShowSQL:  mysql["showsql"].(bool),
+		MaxConns: mysql["max-conns"].(int),
+		MinConns: mysql["min-conns"].(int),
 	}
 }

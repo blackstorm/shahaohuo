@@ -4,7 +4,6 @@
     {{ template "head"}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <title>{{ .Haohuo.Name }} - 啥好货</title>
-    <meta name="haohuo-id" content="{{.Haohuo.Id}}">
     <meta name="description" content="{{printf "%.120s" .Haohuo.Description}}" />
     <meta name="keywords" content="{{ BaseKeyWorlds .Haohuo.Name .Tags }}" />
     <style>
@@ -52,6 +51,14 @@
             color: #fff;
             background-color: #f0a500;
         }
+        .h-icon {
+            padding-left: .2rem;
+            padding-right: .2rem;
+            font-size: 14px;
+        }
+        .h-icon i {
+            padding-right: .2rem;
+        }
     </style>
 </head>
 <body>
@@ -64,10 +71,9 @@
                     <div class="col-md-12">
                         <div class="slogan text-center">
                             <h1>{{ .Haohuo.Name }}</h1>
-
                             <p><a class="main-color" href="/users/{{ .User.Id }}">{{ .User.Name }}</a> 分享于 <time>{{ .Haohuo.CreatedAt.Format "2006/01/02" }}</time>
-                                <span class="h-price">￥{{ .Haohuo.Price }}</span>
-                                <span class="stars main-color" onclick="onStarClick(this.id); return false" id="{{ .Haohuo.Id }}"><i class="fa fa-star"></i> {{ .Haohuo.Favorites }}</span></p>
+                            <span class="stars main-color h-icon" onclick="onStarClick(this.id); return false" id="{{ .Haohuo.Id }}"><i class="fa fa-star"></i>{{ .Haohuo.Favorites }}</span>
+                            <span class="h-price h-icon"><i class="fa fa-yen"></i>{{ .Haohuo.Price }}</span></p>
                             <p class="second-color font-mini">价格可能随时间波动，请注意分享日期的时效性</p>
                         </div>
                     </div>

@@ -5,10 +5,13 @@ mysql:
   port: 30433
   database: shahaohuo
   showsql: false
+  max-conns: 10
+  min-conns: 2
 s3:
   id: minio
   secret: F6JHNrx42weq0UIH1O
   endpoint: http://118.24.52.45:30434
+  access-endpoint: http://118.24.52.45:30434
   region: china-chengdu-1
   disable-ssl: true
   s3-force-path-style: true

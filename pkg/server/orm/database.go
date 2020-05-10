@@ -25,8 +25,8 @@ func Init(mConfig config.MySQLConfig) {
 	if db, err := gorm.Open("mysql", config.FormatDSN()); err == nil {
 		db.LogMode(mConfig.ShowSQL)
 		db.SingularTable(true)
-		db.DB().SetMaxOpenConns(10)
-		db.DB().SetMaxIdleConns(1)
+		db.DB().SetMaxOpenConns(mConfig.MaxConns)
+		db.DB().SetMaxIdleConns(mConfig.MinConns)
 		if err = db.DB().Ping(); err == nil {
 			if err = db.AutoMigrate(&User{}, &Haohuo{}, &Favorite{}, &Image{}, &Comment{}, &Tag{}, &HaohuoTag{}).Error; err == nil {
 				database = db

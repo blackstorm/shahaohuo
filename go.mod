@@ -11,7 +11,6 @@ require (
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/jinzhu/gorm v1.9.11
 	github.com/kr/pretty v0.2.0 // indirect
-	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/viper v1.6.3

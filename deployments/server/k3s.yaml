@@ -64,3 +64,31 @@ spec:
   selector:
     shahaohuo-app: shahaohuo-server
 
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: shahaohuo
+  name: shaohaohuo.com
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/preserve-host: "true"
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    traefik.ingress.kubernetes.io/redirect-regex: "^https://www.(.*)"
+    traefik.ingress.kubernetes.io/redirect-replacement: "https://$1"
+    ingress.kubernetes.io/browser-xss-filter: "true"
+spec:
+  tls:
+  - hosts:
+    - shaohaohuo.com
+    - www.shaohaohuo.com
+    secretName: shahaohuo.com
+  rules:
+  - host: shahaohuo.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: shahaohuo-server-service
+          servicePort: 80

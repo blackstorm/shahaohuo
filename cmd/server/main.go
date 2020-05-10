@@ -1,21 +1,15 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"html/template"
 	"os"
 	"shahaohuo.com/shahaohuo/pkg/bucket"
 	"shahaohuo.com/shahaohuo/pkg/config"
-	"shahaohuo.com/shahaohuo/pkg/health"
-	"shahaohuo.com/shahaohuo/pkg/seo"
 	"shahaohuo.com/shahaohuo/pkg/server/orm"
+	"shahaohuo.com/shahaohuo/pkg/server/router"
 	"shahaohuo.com/shahaohuo/pkg/server/storage"
-	"shahaohuo.com/shahaohuo/pkg/server/task"
-	"shahaohuo.com/shahaohuo/pkg/server/web/api"
-	"shahaohuo.com/shahaohuo/pkg/server/web/html"
-	"shahaohuo.com/shahaohuo/pkg/server/web/middleware"
-	"shahaohuo.com/shahaohuo/pkg/server/web/ws"
 )
+
+const VERSION = "v0.0.3"
 
 func main() {
 	configPath := configPath("/opt/shahaohuo/configs/app.yaml")
@@ -26,74 +20,29 @@ func main() {
 	mysqlConfig := config.NewMysqlConfig(configPath, "yaml")
 	s3Config := config.NewS3Config(configPath, "yaml")
 
-	bkt, e := bucket.NewBucket("shahaohuo", s3Config, true)
-	if e != nil {
-		panic(e)
-	}
-	storage.InitStorage(bkt)
+	// init storage
+	initStorage(s3Config)
+
 	// orm
 	orm.Init(mysqlConfig)
 	// task
-	task.InitTasks()
+	// task.InitTasks()
 	// websocket
-	ws.InitHub()
+	// ws.InitHub()
 
 	/*
 		gin server
 	*/
-	server := gin.New()
-	server.Use(gin.LoggerWithConfig(gin.LoggerConfig{
-		SkipPaths: []string{"/status"},
-	}))
-	server.Use(gin.Recovery())
-
-	// max size 4m TODO is not working ?
-	server.MaxMultipartMemory = 4 << 20
-	//middleware
-	//xssMdlwr := &xss.XssMw{
-	//	FieldsToSkip: []string{"password"},
-	//	BmPolicy:     "UGCPolicy",
-	//}
-	//// server.Use(xssMdlwr.RemoveXss())
-	// statics
-	server.SetFuncMap(template.FuncMap{
-		"BaseKeyWorlds": seo.BaseKeyWorlds,
-	})
-	server.LoadHTMLGlob(templatePath)
-	server.Static("/static", staticPath)
-
-	router := server.Group("/", middleware.ContentSet())
-
-	// open htmls
-	router.GET("/", html.Index)
-	router.GET("/status", health.Status)
-	router.GET("/login", html.Login)
-	router.GET("/register", html.Login)
-	router.GET("/rule", html.Rule)
-	router.GET("/logout", html.Logout)
-	router.GET("/users/:id", html.Users)
-	router.GET("/haohuo/:id", html.Haohuo)
-
-	// websocket
-	router.GET("/ws", ws.ServeWs)
-
-	// auth page
-	cookieAuth := router.Group("/", middleware.CookieAuth())
-	cookieAuth.GET("/share", html.Share)
-	cookieAuth.GET("/settings", html.Settings)
-
-	// api open
-	router.POST("/open/api/v1/login", api.Login)
-	router.POST("/open/api/v1/register", api.Register)
-
-	// auth api
-	authorized := router.Group("/api/v1", middleware.ApiAuth())
-	authorized.PUT("/haohuos/:id", api.CreateOrUpdateHaohuo)
-	authorized.PUT("/haohuos/:id/favorite", api.FavoriteHaohuo)
-	authorized.PUT("/haohuos/:id/comment", api.CommentHaohuo)
-	authorized.POST("/images/upload", api.UploadImage)
-
+	server := router.Server(templatePath, staticPath, VERSION)
 	if e := server.Run(":8080"); e != nil {
+		panic(e)
+	}
+}
+
+func initStorage(config config.S3Config) {
+	if bkt, e := bucket.NewBucket("shahaohuo", config); e == nil {
+		storage.InitStorage(bkt)
+	} else {
 		panic(e)
 	}
 }

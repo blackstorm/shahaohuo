@@ -40,10 +40,6 @@ func Login(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "login.html", nil)
 }
 
-func Rule(c *gin.Context) {
-	c.HTML(200, "rule.html", nil)
-}
-
 func Logout(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "logout.html", nil)
 }

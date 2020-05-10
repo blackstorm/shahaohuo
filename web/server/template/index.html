@@ -67,49 +67,5 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
     <script src="/static/nav.js"></script>
-    <script>
-        Object.defineProperty(String.prototype, 'hashCode', {
-            value: function() {
-                var hash = 0, i, chr;
-                for (i = 0; i < this.length; i++) {
-                    chr   = this.charCodeAt(i);
-                    hash  = ((hash << 5) - hash) + chr;
-                    hash |= 0; // Convert to 32bit integer
-                }
-                return hash;
-            }
-        });
-        $( document ).ready(function() {
-            // ws
-            const socket = new WebSocket('ws://' + window.location.host + '/ws');
-            let preHash = undefined;
-            socket.addEventListener('message', function (event) {
-                let hash = event.data.hashCode();
-                if (preHash !== hash) {
-                    preHash = hash;
-                    const hs = JSON.parse(event.data);
-                    let elements = "";
-                    hs.forEach(it => {
-                        const date = moment(it.created_at).format('YYYY/MM/DD');
-                        elements += "<div class='col-md-3'>" +
-                            "<div class='card'>"+
-                            "<a href='/haohuo/" + it.id + "'><img src='" + it.image_url + "' class='card-img-top' /></a>" +
-                            "<div class='card-body'>"+
-                            "<a class='h-name' href='/haohuo/" + it.id + "'><h5 class='card-title'>" + it.name + "</h5></a>"+
-                            "<p class='card-text description' title='"+ it.description +"'>" + it.description +"</p>"+
-                            "</div>"+
-                            "<div class='card-body'>" +
-                            "<a href='/users/"+it.user_id +"' class='card-link user main-color'>" + it.user_name + "</a>" +
-                            "<span class='created-at second-color'>分享于 " + date  + "</span>"+
-                            "<span class='stars main-color' onclick='onStarClick(this.id); return false' id='"+it.id + "'><i class='fa fa-star'></i> " + it.favorites + "</span>" +
-                            "</div>"+
-                            "</div>"+
-                            "</div>";
-                    });
-                    $("#news .row").html(elements)
-                }
-            });
-        });
-    </script>
 </body>
 </html>
