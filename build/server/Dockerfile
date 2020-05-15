@@ -14,4 +14,4 @@ COPY --from=BUILD /opt/shahaohuo/shahaohuo .
 COPY --from=BUILD /opt/shahaohuo/configs/server/${APP_ENV:-prod}.yaml ./configs/
 COPY --from=BUILD /opt/shahaohuo/web/server/ ./resources/
 
-ENTRYPOINT ["/opt/shahaohuo/server"]
+ENTRYPOINT ["/opt/shahaohuo/shahaohuo"]
