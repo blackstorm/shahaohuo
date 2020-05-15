@@ -19,7 +19,6 @@ jobs:
         run: |
           VERSION=${{ steps.get_version.outputs.VERSION }}
           docker build . --file ./build/server/Dockerfile --build-arg APP_ENV=prod --tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION
-          docker push docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION
           docker tag docker.pkg.github.com/$GITHUB_REPOSITORY/server:$VERSION registry.cn-hongkong.aliyuncs.com/shahaohuo/server:$VERSION
           docker push registry.cn-hongkong.aliyuncs.com/shahaohuo/server:$VERSION
   release:
