@@ -41,6 +41,12 @@ func FindUserBusinessHaohuosByLimit(size int) ([]orm.BusinessHaohuo, error) {
 	})
 }
 
+func FindUserBusinessHaohuosByIds(ids []string) ([]orm.BusinessHaohuo, error) {
+	return businessHaohuo(func() (haohuos []orm.BusinessHaohuo, err error) {
+		return orm.FindBusinessHaohuosByIds(ids)
+	})
+}
+
 func FindUserBusinessHaohuosById(id string) (*orm.BusinessHaohuo, error) {
 	h, e := orm.FindBusinessHaohuosById(id)
 	if e == nil {
@@ -52,6 +58,12 @@ func FindUserBusinessHaohuosById(id string) (*orm.BusinessHaohuo, error) {
 	}
 	logrus.Error(e)
 	return nil, ServiceError
+}
+
+func FindUserBusinessHaohuosByUserIdAndPage(userId string, page, size int) ([]orm.BusinessHaohuo, error) {
+	return businessHaohuo(func() (haohuos []orm.BusinessHaohuo, err error) {
+		return orm.FindBusinessHaohuosByUserIdAndPage(userId, page, size)
+	})
 }
 
 func FindUserBusinessHaohuosByUserIdAndLimit(userId string, limit int) ([]orm.BusinessHaohuo, error) {

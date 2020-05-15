@@ -4,7 +4,7 @@ mysql:
   password: 6bm*h#yEZRuOZE$oMa0DyJlif234S6^O
   port: 30433
   database: shahaohuo
-  showsql: false
+  showsql: true
   max-conns: 10
   min-conns: 2
 s3:

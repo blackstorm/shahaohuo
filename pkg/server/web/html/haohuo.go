@@ -5,7 +5,7 @@ import (
 	"shahaohuo.com/shahaohuo/pkg/server/orm"
 	"shahaohuo.com/shahaohuo/pkg/server/service"
 	"shahaohuo.com/shahaohuo/pkg/server/web"
-	"shahaohuo.com/shahaohuo/pkg/tool"
+	"shahaohuo.com/shahaohuo/pkg/util"
 )
 
 /**
@@ -40,44 +40,44 @@ func Haohuo(c *gin.Context) {
 	}
 
 	// find user
-	userChannel := make(chan tool.AsyncResult)
+	userChannel := make(chan util.AsyncResult)
 	defer close(userChannel)
 	go func() {
 		u, e := service.FindUserById(h.UserId)
-		userChannel <- tool.AsyncResult{
+		userChannel <- util.AsyncResult{
 			Ret:   u,
 			Error: e,
 		}
 	}()
 
 	// favorites
-	fusChannel := make(chan tool.AsyncResult)
+	fusChannel := make(chan util.AsyncResult)
 	defer close(fusChannel)
 	go func() {
 		fus, e := orm.FindFavoriteUsersByHaohuoId(id, 100)
-		fusChannel <- tool.AsyncResult{
+		fusChannel <- util.AsyncResult{
 			Ret:   fus,
 			Error: e,
 		}
 	}()
 
 	// comments
-	cmsChannel := make(chan tool.AsyncResult)
+	cmsChannel := make(chan util.AsyncResult)
 	defer close(cmsChannel)
 	go func() {
 		cms, e := orm.FindHaohuoCommentsByHaohuoId(id, 99)
-		cmsChannel <- tool.AsyncResult{
+		cmsChannel <- util.AsyncResult{
 			Ret:   cms,
 			Error: e,
 		}
 	}()
 
 	// tags
-	tgsChannel := make(chan tool.AsyncResult)
+	tgsChannel := make(chan util.AsyncResult)
 	defer close(tgsChannel)
 	go func() {
 		tgs := orm.FindTagsByHaohuoId(id)
-		tgsChannel <- tool.AsyncResult{
+		tgsChannel <- util.AsyncResult{
 			Ret:   tgs,
 			Error: e,
 		}
@@ -88,7 +88,7 @@ func Haohuo(c *gin.Context) {
 	cms := <-cmsChannel
 	tgs := <-tgsChannel
 
-	if tool.CheckAsyncResultsError(u, fus, cms, tgs) {
+	if util.CheckAsyncResultsError(u, fus, cms, tgs) {
 		errorPage(c)
 		return
 	}

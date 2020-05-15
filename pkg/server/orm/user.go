@@ -7,9 +7,10 @@ import (
 
 type User struct {
 	model.Model
-	Id       string `gorm:"primary_key; size:32"`
+	Id       string `gorm:"primary_key;size:32"`
 	Name     string `gorm:"size:12;not null"`
-	Password string `gorm:"size: 64; not null"`
+	Password string `gorm:"size:64;not null"`
+	Bio      string `gorm:"size:180"`
 }
 
 type BasicUser struct {

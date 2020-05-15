@@ -9,33 +9,6 @@ import (
 	"time"
 )
 
-var shanghai, _ = time.LoadLocation("Asia/Shanghai")
-
-func Index(ctx *gin.Context) {
-	hs, e := service.FindUserBusinessHaohuosByLimit(4)
-	if e == nil {
-		res := gin.H{"NewHaohuos": hs}
-		mostFavorite, e := queryMostFavorite()
-		if e == nil {
-			res["MostFavorite"] = mostFavorite
-			us, e := service.FindLatestUsersByLimit(64)
-			if e == nil {
-				res["LatestUsers"] = us
-				res["Statics"] = service.Statics()
-				ctx.HTML(http.StatusOK, "index.html", res)
-				return
-			}
-		}
-	}
-	errorPage(ctx)
-}
-
-func queryMostFavorite() ([]orm.BusinessHaohuo, error) {
-	now := time.Now().In(shanghai)
-	start := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	return service.FindMostFavoriteBusinessHaohuosByDateAndLimit(start, now, 4)
-}
-
 func Login(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "login.html", nil)
 }
@@ -65,7 +38,7 @@ func Users(c *gin.Context) {
 		ret := gin.H{
 			"User": u,
 		}
-		hs, e := service.FindUserBusinessHaohuosByUserIdAndLimit(uriParams.Id, 24)
+		hs, e := service.FindUserBusinessHaohuosByUserIdAndLimit(uriParams.Id, 8)
 		comments, _ := orm.FindUserCommentsByUserId(uriParams.Id, 10)
 		if e == nil {
 			ret["Haohuos"] = hs

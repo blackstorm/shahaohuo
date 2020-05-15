@@ -1,0 +1,11 @@
+{{ define "tag_map" }}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tags">
+                {{range .}}
+                    <a class="badge badge-main" href="/tags/{{.Id}}"><span >{{.Name}}</span></a>
+                {{end}}
+            </div>
+        </div>
+    </div>
+{{end}}

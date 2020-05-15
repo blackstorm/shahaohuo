@@ -12,7 +12,7 @@ import (
 	"shahaohuo.com/shahaohuo/pkg/server/service"
 	"shahaohuo.com/shahaohuo/pkg/server/storage"
 	"shahaohuo.com/shahaohuo/pkg/server/web"
-	"shahaohuo.com/shahaohuo/pkg/tool"
+	"shahaohuo.com/shahaohuo/pkg/util"
 	"time"
 )
 
@@ -131,7 +131,7 @@ func UploadImage(c *gin.Context) {
 	}
 
 	contentType := http.DetectContentType(bytes)
-	if !tool.CheckIsContain(contentType, tool.PNG, tool.JPEG) {
+	if !util.CheckIsContain(contentType, util.PNG, util.JPEG) {
 		bad(c, newBadResp(1, "file must is an image"))
 		return
 	}

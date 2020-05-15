@@ -9,7 +9,7 @@ import (
 	"shahaohuo.com/shahaohuo/pkg/server/storage"
 )
 
-const VERSION = "v0.0.3"
+const VERSION = "v0.0.6"
 
 func main() {
 	configPath := configPath("/opt/shahaohuo/configs/app.yaml")
@@ -31,7 +31,7 @@ func main() {
 	// ws.InitHub()
 
 	/*
-		gin server
+		request server
 	*/
 	server := router.Server(templatePath, staticPath, VERSION)
 	if e := server.Run(":8080"); e != nil {

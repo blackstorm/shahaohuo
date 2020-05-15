@@ -64,9 +64,29 @@ func FindHaohuosByLimit(size int) (*[]Haohuo, error) {
 	}
 }
 
+func CountHaohuosByUserId(userId string) int {
+	var counts int
+	database.Model(&Haohuo{}).Where("user_id = ?", userId).Count(&counts)
+	return counts
+}
+
+const findBusinessHaohuosByIdsSQL = "SELECT h.*, COUNT(f.haohuo_id) as favorites FROM (SELECT h.*, u.name as user_name FROM haohuo as h force index(PRI), user as u WHERE h.id in (?) and u.id = h.user_id order by h.created_at desc) as h left join favorite as f ON f.haohuo_id = h.id group by h.id"
+
+func FindBusinessHaohuosByIds(ids []string) ([]BusinessHaohuo, error) {
+	var hs []BusinessHaohuo
+	if e := database.Raw(findBusinessHaohuosByIdsSQL, ids).Scan(&hs).Error; e == nil {
+		return hs, nil
+	} else {
+		if gorm.IsRecordNotFoundError(e) {
+			return nil, nil
+		}
+		return nil, e
+	}
+}
+
 func FindBusinessHaohuosByLimit(size int) ([]BusinessHaohuo, error) {
 	var hs []BusinessHaohuo
-	if e := database.Raw("SELECT h.*, COUNT(f.haohuo_id) as favorites FROM (SELECT h.*, u.name as user_name FROM haohuo as h, user as u WHERE u.id = h.user_id order by h.created_at desc limit ?) as h left join favorite as f ON f.haohuo_id = h.id group by h.id", size).Scan(&hs).Error; e == nil {
+	if e := database.Raw("SELECT h.*, COUNT(f.haohuo_id) as favorites FROM (SELECT h.*, u.name as user_name FROM haohuo as h, user as u WHERE u.id = h.user_id order by h.created_at desc limit ?) as h left join favorite as f ON f.haohuo_id = h.id group by h.id order by h.created_at desc", size).Scan(&hs).Error; e == nil {
 		return hs, nil
 	} else {
 		if gorm.IsRecordNotFoundError(e) {
@@ -98,6 +118,19 @@ func FindBusinessHaohuosByUserIdAndLimit(userId string, size int) ([]BusinessHao
 		}
 		return nil, e
 	}
+}
+
+func FindBusinessHaohuosByUserIdAndPage(userId string, page, size int) ([]BusinessHaohuo, error) {
+	var hs []BusinessHaohuo
+	offset := (page - 1) * size
+	ret := database.Raw("SELECT h.*, COUNT(f.haohuo_id) as favorites FROM (SELECT h.*, u.name as user_name FROM haohuo as h, user as u WHERE h.user_id = ? and u.id = h.user_id order by h.created_at desc limit ? offset ?) as h left join favorite as f ON f.haohuo_id = h.id group by h.id", userId, size, offset).Scan(&hs)
+	if ret.RecordNotFound() {
+		return nil, nil
+	}
+	if ret.Error != nil {
+		return nil, ret.Error
+	}
+	return hs, nil
 }
 
 const findMostFavoriteBusinessHaohuosByDateAndLimitSQL = "SELECT f.count as favorites, h.*, u.name as user_name from (SELECT haohuo_id as id, COUNT(1) as count FROM favorite as f WHERE f.created_at between ? AND ? group by f.haohuo_id order by count desc limit ?) as f, haohuo as h, user as u where h.id = f.id and u.id = h.user_id"

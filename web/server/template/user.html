@@ -4,6 +4,16 @@
     {{ template "head"}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <title>{{ .User.Name }} - 啥好货</title>
+    <style>
+        .comments {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .comments .list-group-item {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    </style>
 </head>
 <body>
 <div class="root">
@@ -28,24 +38,41 @@
                     <div class="row">
                         {{ template "card" .Haohuos }}
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a href="/users/{{.User.Id}}/haohuos" class="btn btn-main btn-sm">查看 {{.User.Name}} 更多分享</a>
+                        </div>
+                    </div>
                 </div>
             {{end}}
             {{ if .Comments }}
                 <div class="row">
                     <div class="col-md-12">
-                        <h3 class="sub-title">最近的评论</h3>
+                        <h3 class="sub-title pt-4">最近的评论</h3>
                     </div>
                 </div>
-                {{ range .Comments}}
-                    <div class="row">
-                        <div class="col-md-12">
-                            <a class="main-color font-medium" href="/haohuo/{{.HaohuoId}}">{{.HaohuoName}}</a>
-                            <br>
-                            <time class="second-color font-mini">{{.CreatedAt.Format "2006/01/02"}}</time><br>
-                            <p class="pd-bt-1 full-description">{{.Content}}</p>
-                        </div>
+                <div class="row">
+                     <div class="col-md-12">
+                         <div class="comments">
+                             <ul class="list-group list-group-flush">
+                             {{ range .Comments}}
+                                 <li class="list-group-item">
+                                     <a class="main-color" href="/haohuo/{{.HaohuoId}}">{{.HaohuoName}}</a>
+                                     <br>
+                                     <span class="second-color font-mini">回复于 <time>{{.CreatedAt.Format "2006/01/02"}}</time></span>
+                                     <br>
+                                     <p class="full-description mb-1 mt-2">{{.Content}}</p>
+                                 </li>
+                             {{end}}
+                             </ul>
+                         </div>
+                     </div>
+                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="/users/{{.User.Id}}/comments" class="btn btn-main btn-sm">查看 {{.User.Name}} 更多评论</a>
                     </div>
-                {{end}}
+                </div>
             {{end}}
         </div>
         {{template "footer" }}

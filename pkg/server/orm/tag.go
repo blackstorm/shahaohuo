@@ -17,8 +17,8 @@ func (t Tag) SeoKeyWorld() string {
 type HaohuoTag struct {
 	model.Model
 	Id       int64  `gorm:"primary_key;AUTO_INCREMENT"`
-	HaohuoId string `gorm:"size:32;not null"`
-	TagId    int64  `gorm:"not null"`
+	HaohuoId string `gorm:"size:32;not null;unique_index:tag_haohuo_id_index"sql:"index"`
+	TagId    int64  `gorm:"not null;unique_index:tag_haohuo_id_index"sql:"index"`
 }
 
 func (h *HaohuoTag) Create() error {
@@ -31,10 +31,41 @@ func FindAllTag() ([]Tag, error) {
 	return tags, e
 }
 
+type HaohuoIds struct {
+	HaohuoId []string
+}
+
+func FindHaohuoIdsByTagId(tagId int64, page int, size int) []string {
+	var htags []HaohuoTag
+	database.Where("tag_id = ?", tagId).Order("created_at DESC").Offset((page - 1) * size).Limit(size).Find(&htags)
+	if len(htags) > 0 {
+		ids := make([]string, len(htags))
+		for i, t := range htags {
+			ids[i] = t.HaohuoId
+		}
+		return ids
+	}
+	return nil
+}
+
 func FindTagsByHaohuoId(id string) []Tag {
 	var tags []Tag
 	database.Raw("select t.* from haohuo_tag as ht, tag as t where t.id = ht.tag_id and ht.haohuo_id = ?", id).Scan(&tags)
 	return tags
+}
+
+func CountHaohuosByTagId(id int64) int {
+	var counts int
+	database.Model(&HaohuoTag{}).Where("tag_id = ?", id).Count(&counts)
+	return counts
+}
+
+func FindTagById(id int64) *Tag {
+	var tag Tag
+	if database.First(&tag, id).RecordNotFound() {
+		return nil
+	}
+	return &tag
 }
 
 func DeleteHaohuoTagByHaohuoIdAndTagId(haohuoId string, tagId int64) error {

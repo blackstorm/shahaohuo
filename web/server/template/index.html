@@ -3,8 +3,8 @@
 <head>
     {{ template "head"}}
     <title>啥好货 - 分享实用,好用,可长期使用的好物</title>
-    <meta name=description content="啥好货 shahaohuo.com 由社区驱动的分享实用，好用，耐用的产品平台">
-    <meta name="keywords" content="啥好货,shahaohuo,推荐,实用,好用,耐用,机械键盘,蓝牙耳机">
+    <meta name=description content="啥好货 shahaohuo.com 由社区驱动的实用，好用，耐用的产品分享平台">
+    <meta name="keywords" content="啥好货,shahaohuo,shahaohuo.com,好货推荐,机械键盘,好用的红轴键盘,程序员键盘推荐,蓝牙耳机,好用的蓝牙耳机,耐用的耳机,送男朋友实用礼物">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -43,13 +43,23 @@
                     </div>
                 </div>
                 {{end}}
+                {{if .Tags }}
+                    <div class="box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 class="sub-title">好货标签</h4>
+                            </div>
+                        </div>
+                        {{ template "tag_map" .Tags }}
+                    </div>
+                {{end}}
                 {{if .LatestUsers}}
                     <div class="row">
                         <div class="col-md-12">
-                            <h3 class="sub-title">最新注册的用户</h3>
+                            <h4 class="sub-title">最新注册的用户</h4>
                         </div>
                     </div>
-                    <div class="hbox" id="latest-users">
+                    <div class="box">
                         <div class="row">
                                 <div class="col-md-12">
                                     {{ range .LatestUsers }}

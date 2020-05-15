@@ -3,23 +3,36 @@
     background: #cf7500;
 }
 
+:root {
+    --main-color: #cf7500;
+    --second-color: #969696;
+}
+
 #root {
     width: 100%;
 }
+
+.bg-main {
+    color: white;
+    background-color: var(--main-color);
+}
+
 .main-color {
-    color: #cf7500;
+    color: var(--main-color);
 }
+
 .second-color {
-    color: #dbdbdb;
+    color: var(--second-color);
 }
+
 #nav .main-color {
-    color: #cf7500;
+    color: var(--main-color);
 }
 
 .btn-main {
     color: #fff;
-    background-color: #cf7500;
-    border-color: #cf7500;
+    background-color: var(--main-color);
+    border-color:var(--main-color);
 }
 
 .slogan {
@@ -30,10 +43,10 @@
     padding-bottom: 1rem;
 }
 .slogan h1, .sub-title{
-    color: #cf7500;
+    color: var(--main-color);
 }
 .slogan p {
-    color: #dbdbdb;
+    color: var(--second-color);
 }
 label.error {
     font-size: 12px;
@@ -56,14 +69,9 @@ footer {
 .created-at {
     padding-left: 4px;
 }
-.h-name {
-    color: #000000;
-}
-.h-name:hover {
-    color: #cf7500;
-}
+
 .h-price {
-    color: #cf7500;
+    color: var(--main-color);
 }
 .hbox {
     padding-top: 2rem;
@@ -74,6 +82,7 @@ footer {
     margin-bottom: 1rem;
 }
 .description {
+    min-height: 6rem;
     max-height: 6rem;
     overflow-y: hidden;
     text-overflow: ellipsis;
@@ -97,12 +106,6 @@ footer {
     font-size: 16px;
 }
 
-.pd-top-1 {
-    padding-top: 1rem;
-}
-.pd-bt-1 {
-    padding-bottom: 1rem;
-}
 .page-footer a {
     color: #ced4da;
 }
@@ -130,9 +133,91 @@ footer {
     color: #ffffff;
 }
 
+a.user {
+    color: var(--main-color);
+}
+
+a.user:hover, a.main-color:hover {
+    color: var(--main-color);
+}
+
+.hao .images {
+    min-width: 100.098888%;
+    height: 178px;
+    background-color: #dbdbdb;
+}
+
+.hao .images img {
+    width:100%;
+    height: 100%;
+    object-fit:cover;
+    opacity:.9;
+}
+
+.hao:hover .images img {
+    opacity:1;
+}
+
+.hao .infos {
+    padding-bottom: .5rem;
+}
+
+.hao .meta {
+    color: #dbdbdb;
+    font-size: 14px;
+}
+
+.hao .name {
+    color: #000;
+}
+
+.hao .name:hover {
+    color: var(--main-color);
+}
+
+.pages a {
+    color: var(--main-color);
+}
+
+.pages a:hover {
+    color: var(--main-color);
+}
+
+.pages .active .page-link {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+}
+
+.box {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+}
+
+.tags {
+    padding-top: 1rem;
+}
+
+.badge-main {
+    font-size: 14px;
+    padding: .3rem .4rem;
+    color: white;
+    background-color: #cf7500;
+    margin-bottom: .5rem;
+}
+.badge-main:hover {
+    color: #fff;
+    background-color: #f0a500;
+}
+
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
     .hbox .card {
         margin-bottom: 2rem;
+    }
+    .description {
+        min-height: auto;
+    }
+    .badge-main {
+        margin-bottom: .6rem;
     }
 }

@@ -9,12 +9,13 @@ import (
 	"shahaohuo.com/shahaohuo/pkg/server/web/api"
 	"shahaohuo.com/shahaohuo/pkg/server/web/html"
 	"shahaohuo.com/shahaohuo/pkg/server/web/middleware"
+	tpl "shahaohuo.com/shahaohuo/pkg/template"
 )
 
 func Server(templatePath, staticPath, appVersion string) *gin.Engine {
 	version.SetVersion(appVersion)
 	/*
-		gin server
+		request server
 	*/
 	server := gin.New()
 	server.Use(gin.LoggerWithConfig(gin.LoggerConfig{
@@ -35,6 +36,8 @@ func Server(templatePath, staticPath, appVersion string) *gin.Engine {
 		"BaseKeyWorlds": seo.BaseKeyWorlds,
 		"AppVersion":    version.Version.GetVersion,
 		"StaticVersion": version.Version.StaticVersion,
+		"IntAdd":        tpl.IntAdd,
+		"IntReduce":     tpl.IntReduce,
 	})
 	server.LoadHTMLGlob(templatePath)
 	server.Static("/static", staticPath)
@@ -51,7 +54,9 @@ func Server(templatePath, staticPath, appVersion string) *gin.Engine {
 	router.GET("/feedback", html.PageHandle("help"))
 	router.GET("/logout", html.Logout)
 	router.GET("/users/:id", html.Users)
+	router.GET("/users/:id/haohuos", html.UserHaohuosPage)
 	router.GET("/haohuo/:id", html.Haohuo)
+	router.GET("/tags/:id", html.TagsPage)
 
 	// websocket
 	// router.GET("/ws", ws.ServeWs)

@@ -65,6 +65,35 @@ spec:
     shahaohuo-app: shahaohuo-server
 
 ---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: mintls11
+  namespace: shahaohu
+spec:
+  minVersion: VersionTLS11
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: maxtls13
+  namespace: shahaohuo
+spec:
+  maxVersion: VersionTLS13
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  namespace: shahaohuo
+  name: security-headers
+spec:
+  headers:
+    frameDeny: "true"
+    sslRedirect: "true"
+
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
