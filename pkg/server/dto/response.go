@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"shahaohuo.com/shahaohuo/pkg/model"
+	"time"
+)
 
 type HaohuoFavorites struct {
 	HaohuoId  string `json:"haohuo_id"`
@@ -14,4 +17,12 @@ type CommentResponse struct {
 	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type UserResponse struct {
+	model.Model
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	Bio    string `json:"bio"`
+	Avatar string `json:"avatar"`
 }

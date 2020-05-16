@@ -3,17 +3,11 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
-	"github.com/rs/xid"
-	"github.com/sirupsen/logrus"
-	"io/ioutil"
-	"net/http"
 	"shahaohuo.com/shahaohuo/pkg/server/dto"
 	"shahaohuo.com/shahaohuo/pkg/server/image"
 	"shahaohuo.com/shahaohuo/pkg/server/orm"
 	"shahaohuo.com/shahaohuo/pkg/server/service"
-	"shahaohuo.com/shahaohuo/pkg/server/storage"
 	"shahaohuo.com/shahaohuo/pkg/server/web"
-	"shahaohuo.com/shahaohuo/pkg/util"
 	"time"
 )
 
@@ -57,7 +51,7 @@ func CreateOrUpdateHaohuo(c *gin.Context) {
 				bad(c, "haohuo exist")
 				return
 			}
-			error(c, "server error")
+			internalServerError(c, "server error")
 		}
 	}
 }
@@ -78,7 +72,7 @@ func FavoriteHaohuo(c *gin.Context) {
 				return
 			}
 		}
-		error(c, newBadResp(-1, "server error"))
+		internalServerError(c, newBadResp(-1, "server error"))
 	}
 }
 
@@ -108,52 +102,6 @@ func CommentHaohuo(c *gin.Context) {
 			ok(c, &ret)
 			return
 		}
-		error(c, newBadResp(-1, "server error"))
+		internalServerError(c, newBadResp(-1, "server error"))
 	}
-}
-
-func UploadImage(c *gin.Context) {
-	userId, _ := mustGetUserIdByContent(c)
-	fileHeader, err := c.FormFile("image")
-
-	if err != nil {
-		logrus.Error(err)
-		bad(c, "get file error")
-		return
-	}
-
-	file, err := fileHeader.Open()
-	if err != nil {
-		logrus.Error(err)
-		error(c, "server error")
-		return
-	}
-
-	// TODO zero copy
-	bytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		logrus.Error(err)
-		error(c, "server error")
-		return
-	}
-
-	contentType := http.DetectContentType(bytes)
-	if !util.CheckIsContain(contentType, util.PNG, util.JPEG) {
-		bad(c, newBadResp(1, "file must is an image"))
-		return
-	}
-
-	id := xid.New().String()
-	imagePath := "/haohuos/images/" + id
-	if err := storage.GetBucket().Upload(imagePath, contentType, bytes); err != nil {
-		logrus.Error(err)
-		error(c, "server error")
-		return
-	}
-
-	go orm.SaveImage(userId, id, imagePath)
-
-	ok(c, gin.H{
-		"path": imagePath,
-	})
 }

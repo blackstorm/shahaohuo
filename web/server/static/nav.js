@@ -5,7 +5,7 @@ $().ready(function() {
     if (USER) {
         const user = USER;
         nav.append("<a class=\"nav-item nav-link\" href='/users/" + user.id + "'>" + user.name + "</a>")
-        // nav.append("<a class=\"nav-item nav-link\" href='/settings'>设置</a>")
+        nav.append("<a class=\"nav-item nav-link\" href='/settings'>设置</a>")
         nav.append("<a class=\"nav-item nav-link main-color\" href=\"/share\">分享好货</a>")
     } else {
         nav.append("<a class=\"nav-item nav-link\" href=\"/login\">登录 / 注册</a>")
@@ -27,17 +27,22 @@ function $user() {
     window.location = "/login"
 }
 
+function updateLocalstorageUsername(name) {
+    const content = localStorage.getItem("user");
+    if (content) {
+        let u = JSON.parse(content);
+        u.name = name;
+        localStorage.setItem("user", JSON.stringify(u))
+    }
+}
+
 // api
 const api = {
     favorite: function (data, onSuccess) {
-        if (!USER) {
-            window.location = "/login";
-            return;
-        }
         $.ajax({
             type: "PUT",
             url: "/api/v1/haohuos/" + data + "/favorite",
-            headers: {"Authorization": "Bearer " + USER.token},
+            headers: {"Authorization": "Bearer " + $user().token},
             contentType: "application/json",
             cache: false,
             success: onSuccess

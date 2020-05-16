@@ -13,6 +13,5 @@ func GetUserIdByContent(c *gin.Context) (string, bool) {
 	if id, ok := c.Get(middleware.RequestUserId); ok {
 		return id.(string), true
 	}
-
 	return "", false
 }

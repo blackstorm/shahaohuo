@@ -11,6 +11,7 @@ type User struct {
 	Name     string `gorm:"size:12;not null"`
 	Password string `gorm:"size:64;not null"`
 	Bio      string `gorm:"size:180"`
+	Avatar   string `gorm:"size:1024; not null"`
 }
 
 type BasicUser struct {
@@ -28,6 +29,15 @@ func (u *User) Save() error {
 		return e
 	}
 	return nil
+}
+
+// TODO version
+func (u *User) Update() error {
+	return database.Save(u).Error
+}
+
+func (u *User) GetBaseImageUrl() string {
+	return u.Avatar
 }
 
 func FindUserById(id string) (*User, error) {

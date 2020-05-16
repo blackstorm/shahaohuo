@@ -4,6 +4,11 @@ import (
 	"github.com/sirupsen/logrus"
 	"shahaohuo.com/shahaohuo/pkg/crypto"
 	"shahaohuo.com/shahaohuo/pkg/server/orm"
+	"shahaohuo.com/shahaohuo/pkg/server/storage"
+)
+
+const (
+	defaultAvatarPath = "/default/avatar.png"
 )
 
 func Login(id string, passwd string) (*orm.User, error) {
@@ -32,6 +37,7 @@ func Register(id string, passwd string) (*orm.User, error) {
 				Id:       id,
 				Name:     id,
 				Password: encoded,
+				Avatar:   defaultAvatarPath,
 			}
 			if e = user.Save(); e == nil {
 				return user, nil
@@ -50,6 +56,7 @@ func Register(id string, passwd string) (*orm.User, error) {
 
 func FindUserById(id string) (*orm.User, error) {
 	if u, e := orm.FindUserById(id); e == nil {
+		u.Avatar = storage.ComplementImageUrl(u)
 		return u, nil
 	} else {
 		logrus.Error(e)

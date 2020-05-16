@@ -23,8 +23,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="slogan text-center">
+                        <img class="avatar" style="padding-bottom: .2rem" src="{{ .User.Avatar }}" alt="{{ .User.Name }}">
                         <h1>{{ .User.Name }}</h1>
-                        <p>注册于 {{ .User.CreatedAt.Format "2006/01/02" }}</p>
+                        <p style="margin-bottom: .5rem">注册于 {{ .User.CreatedAt.Format "2006/01/02" }}</p>
+                        <p style="margin-bottom: .5rem">{{ .User.Bio}}</p>
                     </div>
                 </div>
             </div>

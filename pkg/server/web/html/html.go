@@ -29,7 +29,7 @@ func Users(c *gin.Context) {
 		errorPage(c)
 		return
 	}
-	u, e := service.FindBasicUserById(uriParams.Id)
+	u, e := service.FindUserById(uriParams.Id)
 	if e == nil {
 		if u == nil {
 			notFoundPage(c)

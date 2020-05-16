@@ -114,7 +114,7 @@
             uploadImage: function (data, success, error) {
                 $.ajax({
                     type: "POST",
-                    url: "/api/v1/images/upload",
+                    url: "/api/v1/images/upload?t=haohuo",
                     headers: {"Authorization": "Bearer " + user.token},
                     enctype: 'multipart/form-data',
                     processData: false,
