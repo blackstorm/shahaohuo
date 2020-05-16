@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"shahaohuo.com/shahaohuo/pkg/server/dto"
+	"shahaohuo.com/shahaohuo/pkg/server/image"
 	"shahaohuo.com/shahaohuo/pkg/server/orm"
 	"shahaohuo.com/shahaohuo/pkg/server/service"
 	"shahaohuo.com/shahaohuo/pkg/server/storage"
@@ -41,6 +42,12 @@ func CreateOrUpdateHaohuo(c *gin.Context) {
 
 	if userId, get := mustGetUserIdByContent(c); get {
 		req.Id = uriParams.Id
+
+		if !image.CheckIsUserImage(userId, req.ImageUrl) {
+			bad(c, "bad image url")
+			return
+		}
+
 		if h, e := service.CreateOrUpdate(&req, userId); e == nil {
 			ret := &CreateOrUpdateResponse{}
 			_ = copier.Copy(ret, h)
