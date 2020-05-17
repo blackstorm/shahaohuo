@@ -29,14 +29,20 @@ func Haohuo(c *gin.Context) {
 
 	id := uriParams.Id
 
+	if h, e := service.FindHaohuoById(id); e != nil {
+		errorPage(c)
+		return
+	} else if h == nil {
+		notFoundPage(c)
+		return
+	} else {
+		h.AsyncUpdateClicks()
+	}
+
 	// find haohuo
 	h, e := service.FindUserBusinessHaohuosById(id)
 	if e != nil {
-		if e == service.ResourcesNotFound {
-			notFoundPage(c)
-		} else {
-			errorPage(c)
-		}
+		errorPage(c)
 		return
 	}
 
@@ -55,7 +61,7 @@ func Haohuo(c *gin.Context) {
 	fusChannel := make(chan util.AsyncResult)
 	defer close(fusChannel)
 	go func() {
-		fus, e := orm.FindFavoriteUsersByHaohuoId(id, 100)
+		fus, e := orm.FindFavoriteUsersByHaohuoId(id, 18)
 		fusChannel <- util.AsyncResult{
 			Ret:   fus,
 			Error: e,
