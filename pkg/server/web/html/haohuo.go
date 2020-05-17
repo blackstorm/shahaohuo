@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"shahaohuo.com/shahaohuo/pkg/server/orm"
 	"shahaohuo.com/shahaohuo/pkg/server/service"
+	"shahaohuo.com/shahaohuo/pkg/server/storage"
 	"shahaohuo.com/shahaohuo/pkg/server/web"
 	"shahaohuo.com/shahaohuo/pkg/util"
 )
@@ -66,6 +67,11 @@ func Haohuo(c *gin.Context) {
 	defer close(cmsChannel)
 	go func() {
 		cms, e := orm.FindHaohuoCommentsByHaohuoId(id, 99)
+		if len(cms) > 0 {
+			for i, _ := range cms {
+				storage.AutoComplementImageUrl(&cms[i])
+			}
+		}
 		cmsChannel <- util.AsyncResult{
 			Ret:   cms,
 			Error: e,

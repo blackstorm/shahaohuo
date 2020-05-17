@@ -32,6 +32,10 @@ func (h *BusinessHaohuo) GetBaseImageUrl() string {
 	return h.ImageUrl
 }
 
+func (h *BusinessHaohuo) SetFullImageUrl(url string) {
+	h.ImageUrl = url
+}
+
 func (h *Haohuo) Create() error {
 	return database.Create(h).Error
 }

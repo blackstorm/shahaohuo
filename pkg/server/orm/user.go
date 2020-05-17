@@ -40,6 +40,10 @@ func (u *User) GetBaseImageUrl() string {
 	return u.Avatar
 }
 
+func (u *User) SetFullImageUrl(url string) {
+	u.Avatar = url
+}
+
 func FindUserById(id string) (*User, error) {
 	user := &User{}
 	if err := database.Where("id = ?", id).First(user).Error; err != nil {

@@ -56,7 +56,8 @@ func Register(id string, passwd string) (*orm.User, error) {
 
 func FindUserById(id string) (*orm.User, error) {
 	if u, e := orm.FindUserById(id); e == nil {
-		u.Avatar = storage.ComplementImageUrl(u)
+
+		storage.AutoComplementImageUrl(u)
 		return u, nil
 	} else {
 		logrus.Error(e)
