@@ -9,7 +9,7 @@ import (
 	"shahaohuo.com/shahaohuo/pkg/server/storage"
 )
 
-const VERSION = "v0.0.6"
+const VERSION = "v0.0.7"
 
 func main() {
 	configPath := configPath("/opt/shahaohuo/configs/app.yaml")
