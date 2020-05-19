@@ -8,6 +8,7 @@ type Tag struct {
 	model.Model
 	Id   int64  `gorm:"primary_key;AUTO_INCREMENT"`
 	Name string `gorm:"varchar(255);not null;unique_index:tag_name_index"sql:"index"`
+	Icon string `gorm:"varchar(255);not null"`
 }
 
 func (t Tag) SeoKeyWorld() string {
