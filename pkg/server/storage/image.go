@@ -2,8 +2,10 @@ package storage
 
 type StorageImage interface {
 	GetBaseImageUrl() string
+	SetFullImageUrl(string2 string)
 }
 
-func ComplementImageUrl(image StorageImage) string {
-	return _bucket.AccessUrl() + image.GetBaseImageUrl()
+func AutoComplementImageUrl(image StorageImage) {
+	url := _bucket.AccessUrl() + image.GetBaseImageUrl()
+	image.SetFullImageUrl(url)
 }

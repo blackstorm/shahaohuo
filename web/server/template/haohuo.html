@@ -49,6 +49,10 @@
         .h-icon i {
             padding-right: .2rem;
         }
+        .avatar {
+            max-height: 22px;
+            padding-right: .2rem;
+        }
     </style>
 </head>
 <body>
@@ -61,7 +65,7 @@
                     <div class="col-md-12">
                         <div class="slogan text-center">
                             <h1>{{ .Haohuo.Name }}</h1>
-                            <p><a class="main-color" href="/users/{{ .User.Id }}">{{ .User.Name }}</a> 分享于 <time>{{ .Haohuo.CreatedAt.Format "2006/01/02" }}</time>
+                            <p><a class="main-color" href="/users/{{ .User.Id }}"><img src="{{ .User.Avatar }}" alt="{{ .User.Name }}" class="avatar" />{{ .User.Name }}</a> 分享于 <time>{{ .Haohuo.CreatedAt.Format "2006/01/02" }}</time>
                             <span class="stars main-color h-icon" onclick="onStarClick(this.id); return false" id="{{ .Haohuo.Id }}"><i class="fa fa-star"></i>{{ .Haohuo.Favorites }}</span>
                             <span class="h-price h-icon"><i class="fa fa-yen"></i>{{ .Haohuo.Price }}</span></p>
                             <p class="second-color font-mini">价格可能随时间波动，请注意分享日期的时效性</p>
@@ -98,6 +102,7 @@
                                     <div class="comment">
                                         <div class="row">
                                             <div class="col-md-12">
+                                                <img src="{{ .UserAvatar }}" alt="{{ .UserName }}" class="avatar" />
                                                 <a href="/users/{{.UserId}}">{{.UserName}}</a><br/>
                                                 <time class="second-color font-mini">{{ .CreatedAt.Format "2006/01/02" }}</time>
                                                 <p class="font-weight-light" style="white-space: pre-line">{{.Content}}</p>

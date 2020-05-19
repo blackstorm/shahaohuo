@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"shahaohuo.com/shahaohuo/pkg/server/orm"
 	"shahaohuo.com/shahaohuo/pkg/server/service"
+	"shahaohuo.com/shahaohuo/pkg/server/storage"
 	"shahaohuo.com/shahaohuo/pkg/server/web"
 	"shahaohuo.com/shahaohuo/pkg/util"
 )
@@ -28,14 +29,20 @@ func Haohuo(c *gin.Context) {
 
 	id := uriParams.Id
 
+	if h, e := service.FindHaohuoById(id); e != nil {
+		errorPage(c)
+		return
+	} else if h == nil {
+		notFoundPage(c)
+		return
+	} else {
+		h.AsyncUpdateClicks()
+	}
+
 	// find haohuo
 	h, e := service.FindUserBusinessHaohuosById(id)
 	if e != nil {
-		if e == service.ResourcesNotFound {
-			notFoundPage(c)
-		} else {
-			errorPage(c)
-		}
+		errorPage(c)
 		return
 	}
 
@@ -54,7 +61,7 @@ func Haohuo(c *gin.Context) {
 	fusChannel := make(chan util.AsyncResult)
 	defer close(fusChannel)
 	go func() {
-		fus, e := orm.FindFavoriteUsersByHaohuoId(id, 100)
+		fus, e := orm.FindFavoriteUsersByHaohuoId(id, 18)
 		fusChannel <- util.AsyncResult{
 			Ret:   fus,
 			Error: e,
@@ -66,6 +73,11 @@ func Haohuo(c *gin.Context) {
 	defer close(cmsChannel)
 	go func() {
 		cms, e := orm.FindHaohuoCommentsByHaohuoId(id, 99)
+		if len(cms) > 0 {
+			for i, _ := range cms {
+				storage.AutoComplementImageUrl(&cms[i])
+			}
+		}
 		cmsChannel <- util.AsyncResult{
 			Ret:   cms,
 			Error: e,

@@ -18,3 +18,12 @@ func SaveImage(userId, id, path string) error {
 		Path:   path,
 	}).Error
 }
+
+func FindByUserIdAndPath(userId, path string) (*Image, error) {
+	var image Image
+	_db := database.Where("user_id = ? and path = ?", userId, path).First(&image)
+	if _db.RecordNotFound() {
+		return nil, nil
+	}
+	return &image, _db.Error
+}

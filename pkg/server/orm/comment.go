@@ -15,12 +15,13 @@ type Comment struct {
 }
 
 type HaohuoComment struct {
-	Id        string    `json:"id"`
-	UserName  string    `json:"user_name"`
-	UserId    string    `json:"user_id"`
-	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Id         string    `json:"id"`
+	UserName   string    `json:"user_name"`
+	UserId     string    `json:"user_id"`
+	UserAvatar string    `json:"avatar"`
+	Content    string    `json:"content"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
 }
 
 type UserComment struct {
@@ -41,7 +42,15 @@ func (c *Comment) Update() error {
 	return database.Save(c).Error
 }
 
-const findUserCommentsByHaohuoIdSQL = "select u.id as user_id, u.name as user_name, c.* from comment as c, user as u where u.id = c.user_id and c.haohuo_id = ? order by c.created_at desc limit ?"
+func (uc *HaohuoComment) GetBaseImageUrl() string {
+	return uc.UserAvatar
+}
+
+func (uc *HaohuoComment) SetFullImageUrl(url string) {
+	uc.UserAvatar = url
+}
+
+const findUserCommentsByHaohuoIdSQL = "select u.id as user_id, u.name as user_name, u.avatar as user_avatar, c.* from comment as c, user as u where u.id = c.user_id and c.haohuo_id = ? order by c.created_at desc limit ?"
 
 func FindHaohuoCommentsByHaohuoId(id string, limit uint) ([]HaohuoComment, error) {
 	var ucs []HaohuoComment

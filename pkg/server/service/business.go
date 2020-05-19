@@ -97,11 +97,11 @@ func businessHaohuo(fn businessHaohuoFunc) ([]orm.BusinessHaohuo, error) {
 }
 
 func setImageUrl(hs []orm.BusinessHaohuo) {
-	for i, h := range hs {
-		hs[i].ImageUrl = storage.ComplementImageUrl(&h)
+	for i, _ := range hs {
+		storage.AutoComplementImageUrl(&hs[i])
 	}
 }
 
 func _setImageUrl(h *orm.BusinessHaohuo) {
-	h.ImageUrl = storage.ComplementImageUrl(h)
+	storage.AutoComplementImageUrl(h)
 }

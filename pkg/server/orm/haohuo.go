@@ -2,6 +2,7 @@ package orm
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/sirupsen/logrus"
 	"shahaohuo.com/shahaohuo/pkg/model"
 	"time"
 )
@@ -14,6 +15,7 @@ type Haohuo struct {
 	Price       int    `gorm:"type:int(10);not null"`
 	Description string `gorm:"type:text;not null"`
 	ImageUrl    string `gorm:"size:1024; not null"`
+	Clicks      int    `gorm:"not null;default 0"`
 }
 
 type BusinessHaohuo struct {
@@ -32,12 +34,26 @@ func (h *BusinessHaohuo) GetBaseImageUrl() string {
 	return h.ImageUrl
 }
 
+func (h *BusinessHaohuo) SetFullImageUrl(url string) {
+	h.ImageUrl = url
+}
+
 func (h *Haohuo) Create() error {
 	return database.Create(h).Error
 }
 
 func (h *Haohuo) Update() error {
 	return database.Save(h).Error
+}
+
+func (h *Haohuo) AsyncUpdateClicks() {
+	go func() {
+		// 解决方案
+		rows := database.Model(h).Where("clicks = ?", h.Clicks).Update("clicks", h.Clicks+1).RowsAffected
+		if rows <= 0 {
+			logrus.Error("may update haohuo click fadile")
+		}
+	}()
 }
 
 func FindHaohuoById(id string) (*Haohuo, error) {

@@ -30,7 +30,7 @@ func ok(c *gin.Context, obj interface{}) {
 	c.JSON(http.StatusOK, obj)
 }
 
-func error(c *gin.Context, obj interface{}) {
+func internalServerError(c *gin.Context, obj interface{}) {
 	c.JSON(http.StatusInternalServerError, obj)
 }
 
