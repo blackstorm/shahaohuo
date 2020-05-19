@@ -1,0 +1,21 @@
+{{ define "card-v2" }}
+            <section class="card hao">
+                <div class="images">
+                    <a href="/haohuo/{{ .Id }}">
+                        <img src="{{ .ImageUrl }}" class="card-img-top" alt="{{ .Name }}">
+                    </a>
+                </div>
+                <div class="on-hover">
+                    <span class="stars main-color" onclick="onStarClick(this.id); return false" id="{{ .Id }}"><i class="fa fa-star"></i> {{ .Favorites }}</span>
+                </div>
+                <div class="card-body infos">
+                    <a class="name" href="/haohuo/{{ .Id }}"><h5 class="card-title">{{ .Name }}</h5></a>
+                    <p class="card-text description font-weight-light" title="{{ .Description }}">{{ .Description }}</p>
+                </div>
+                <div class="card-body meta">
+                    <a href="/users/{{ .UserId }}" class="card-link user">{{ .UserName }}</a>
+                    <span class="created-at">{{ .CreatedAt.Format "2006/01/02" }}</span>
+                    <span style="font-size: 14px"><i class="fa fa-star"></i> {{ .Favorites }}</span>
+                </div>
+            </section>
+{{ end }}

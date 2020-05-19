@@ -16,7 +16,7 @@ func Index(ctx *gin.Context) {
 	hsChan := make(chan util.AsyncResult)
 	defer close(hsChan)
 	go func() {
-		hs, e := service.FindUserBusinessHaohuosByLimit(4)
+		hs, e := service.FindUserBusinessHaohuosByLimit(12)
 		hsChan <- util.AsyncResult{
 			Ret:   hs,
 			Error: e,

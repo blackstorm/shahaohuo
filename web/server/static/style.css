@@ -110,6 +110,10 @@ footer {
     color: #ced4da;
 }
 
+.card.hao {
+    margin-bottom: 1.5rem;
+}
+
 .card.hao a{
     text-decoration: none;
 }
@@ -212,6 +216,14 @@ a.user:hover, a.main-color:hover {
 .avatar {
     max-width: 48px;
     border-radius: 50%;
+}
+
+.no-bd {
+    border: none;
+}
+
+.card.pd-04 .card-body {
+    padding: .4rem;
 }
 
 @media only screen and (max-width: 768px) {

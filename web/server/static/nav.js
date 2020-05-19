@@ -27,6 +27,10 @@ function $user() {
     window.location = "/login"
 }
 
+function isLogin() {
+    return USER !== undefined && USER !== null
+}
+
 function updateLocalstorageUsername(name) {
     const content = localStorage.getItem("user");
     if (content) {

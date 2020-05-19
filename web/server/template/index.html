@@ -21,6 +21,16 @@
                         </div>
                     </div>
                 </div>
+                {{if .Tags }}
+                    <div class="box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 class="sub-title">好货标签</h4>
+                            </div>
+                        </div>
+                        {{ template "tag_map" .Tags }}
+                    </div>
+                {{end}}
                     <div class="row">
                         <div class="col-md-12">
                             <h3 class="sub-title">最新好货</h3>
@@ -43,20 +53,10 @@
                     </div>
                 </div>
                 {{end}}
-                {{if .Tags }}
-                    <div class="box">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h4 class="sub-title">好货标签</h4>
-                            </div>
-                        </div>
-                        {{ template "tag_map" .Tags }}
-                    </div>
-                {{end}}
                 {{if .LatestUsers}}
                     <div class="row">
                         <div class="col-md-12">
-                            <h4 class="sub-title">最新注册的用户</h4>
+                            <h4 class="sub-title">新用户</h4>
                         </div>
                     </div>
                     <div class="box">

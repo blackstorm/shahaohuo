@@ -13,6 +13,18 @@
             padding-left: 0;
             padding-right: 0;
         }
+        .user-card {
+            padding-bottom: 0;
+            background-color: var(--main-color);
+            border-color: var(--main-color);
+            color: white;
+        }
+        .user-card .avatar {
+            max-width: 64px;
+        }
+        .qiuqiunile {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -23,59 +35,75 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="slogan text-center">
-                        <img class="avatar" style="padding-bottom: .2rem" src="{{ .User.Avatar }}" alt="{{ .User.Name }}">
-                        <h1>{{ .User.Name }}</h1>
-                        <p style="margin-bottom: .5rem">注册于 {{ .User.CreatedAt.Format "2006/01/02" }}</p>
-                        <p style="margin-bottom: .5rem">{{ .User.Bio}}</p>
+                        <h1 class="sub-title">{{ .User.Name }}</h1>
                     </div>
                 </div>
             </div>
-            {{ if .Haohuos }}
                 <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="sub-title">{{ .User.Name }}的分享</h3>
-                    </div>
-                </div>
-                <div class="hbox" id="most-favorite">
-                    <div class="row">
-                        {{ template "card" .Haohuos }}
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <a href="/users/{{.User.Id}}/haohuos" class="btn btn-main btn-sm">查看 {{.User.Name}} 更多分享</a>
+                    <div class="col-md-3">
+                        <div class="card user-card mb-4">
+                            <div class="card-body" style="padding-bottom: 1rem">
+                                <img class="avatar" style="padding-bottom: .2rem" src="{{ .User.Avatar }}" alt="{{ .User.Name }}">
+                            </div>
+                            <div class="card-body">
+                                <h3>{{ .User.Name }}</h3>
+                                <p style="margin-bottom: .5rem">注册于 {{ .User.CreatedAt.Format "2006/01/02" }}</p>
+                                <p style="margin-bottom: .5rem">{{ .User.Bio}}</p>
+                            </div>
+                        </div>
+                        <div class="card mb-4 qiuqiunile">
+                            <div class="card-body">
+                                <h5>注册啥好货</h5>
+                                <p style="margin-bottom: .5rem" class="font-weight-light">网站已经上线几个星期了，就差你一个注册就能上热门了，站长在这里谢谢大家了（抱拳）</p>
+                                <p style="margin-bottom: .5rem"><a href="/login">登录 / 注册</a></p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {{end}}
-            {{ if .Comments }}
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="sub-title pt-4">最近的评论</h3>
+                    <div class="col-md-9">
+                        {{ if .Haohuos }}
+                        <h3 class="sub-title">Ta 的好货</h3>
+                        <div>
+                            <div class="row">
+                                {{ range .Haohuos }}
+                                    <div class="col-md-4">
+                                        {{ template "card-v2" . }}
+                                    </div>
+                                {{ end }}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a href="/users/{{.User.Id}}/haohuos" class="btn btn-main btn-sm">查看 {{.User.Name}} 更多分享</a>
+                                </div>
+                            </div>
+                        </div>
+                        {{end}}
+                        {{ if .Comments }}
+                            <h3 class="sub-title pt-4">最近的评论</h3>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="comments">
+                                        <ul class="list-group list-group-flush">
+                                            {{ range .Comments}}
+                                                <li class="list-group-item">
+                                                    <a class="main-color" href="/haohuo/{{.HaohuoId}}">{{.HaohuoName}}</a>
+                                                    <br>
+                                                    <span class="second-color font-mini">回复于 <time>{{.CreatedAt.Format "2006/01/02"}}</time></span>
+                                                    <br>
+                                                    <p class="full-description mb-1 mt-2">{{.Content}}</p>
+                                                </li>
+                                            {{end}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a href="/users/{{.User.Id}}/comments" class="btn btn-main btn-sm">查看 {{.User.Name}} 更多评论</a>
+                                </div>
+                            </div>
+                        {{end}}
                     </div>
                 </div>
-                <div class="row">
-                     <div class="col-md-12">
-                         <div class="comments">
-                             <ul class="list-group list-group-flush">
-                             {{ range .Comments}}
-                                 <li class="list-group-item">
-                                     <a class="main-color" href="/haohuo/{{.HaohuoId}}">{{.HaohuoName}}</a>
-                                     <br>
-                                     <span class="second-color font-mini">回复于 <time>{{.CreatedAt.Format "2006/01/02"}}</time></span>
-                                     <br>
-                                     <p class="full-description mb-1 mt-2">{{.Content}}</p>
-                                 </li>
-                             {{end}}
-                             </ul>
-                         </div>
-                     </div>
-                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <a href="/users/{{.User.Id}}/comments" class="btn btn-main btn-sm">查看 {{.User.Name}} 更多评论</a>
-                    </div>
-                </div>
-            {{end}}
         </div>
         {{template "footer" }}
     </div>
@@ -83,6 +111,13 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
 <script src="/static/nav.js"></script>
+<script>
+    $(function () {
+        if (!isLogin()) {
+            $(".qiuqiunile").show()
+        }
+    })
+</script>
 {{template "analytics"}}
 </body>
 </html>
