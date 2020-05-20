@@ -29,8 +29,6 @@
         }
         .favorite-user, .comment-edit, .comments {
             width: 100%;
-            padding-top: 1rem;
-            padding-bottom: 2rem;
         }
         .favorite-user a, .comments a {
             color: #cf7500;
@@ -41,6 +39,10 @@
         .comment {
             padding-top: 1.45rem;
         }
+        .comment .avatar {
+            max-width: 25px;
+            padding-right: .2rem;
+        }
         .h-icon {
             padding-left: .2rem;
             padding-right: .2rem;
@@ -49,9 +51,20 @@
         .h-icon i {
             padding-right: .2rem;
         }
-        .avatar {
-            max-height: 22px;
+        .haohuo-detail .user-card {
+            background-color: white;
+            border: 1px solid rgba(0,0,0,.125);
+            color: var(--second-color);
+        }
+        .bilibili-video {
+            padding-bottom: 1rem;
+        }
+        .title {
+            padding-left: .2rem;
             padding-right: .2rem;
+            display: inline-block;
+            color: white;
+            background-color: var(--main-color);
         }
     </style>
 </head>
@@ -60,87 +73,110 @@
     <div class="wrapper">
         {{ template "nav" }}
         <div class="container">
-            <div class="haohuo-detail">
+            <div class="haohuo-detail pt-4">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="slogan text-center">
-                            <h1>{{ .Haohuo.Name }}</h1>
-                            <p><a class="main-color" href="/users/{{ .User.Id }}"><img src="{{ .User.Avatar }}" alt="{{ .User.Name }}" class="avatar" />{{ .User.Name }}</a> 分享于 <time>{{ .Haohuo.CreatedAt.Format "2006/01/02" }}</time>
-                            <span class="stars main-color h-icon" onclick="onStarClick(this.id); return false" id="{{ .Haohuo.Id }}"><i class="fa fa-star"></i>{{ .Haohuo.Favorites }}</span>
-                            <span class="h-price h-icon"><i class="fa fa-yen"></i>{{ .Haohuo.Price }}</span></p>
-                            <p class="second-color font-mini">价格可能随时间波动，请注意分享日期的时效性</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="images">
-                            <img src="{{ .Haohuo.ImageUrl }}" alt="{{ .Name }}">
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="description">
-                            <p class="font-weight-light">{{ .Haohuo.Description }}</p>
-                        </div>
-                        {{if .Tags}}
-                        <div class="tags">
-                                {{range .Tags}}
-                                    <a class="badge badge-main" href="/tags/{{.Id}}"><span >{{.Name}}</span></a>
-                                {{end}}
-                        </div>
-                        {{end}}
-                    </div>
-                </div>
-                {{ if .Comments }}
-                    <div class="row">
-                        <div class="comments">
+                    <div class="col-md-9">
+                        <div class="row">
                             <div class="col-md-12">
-                                <h2 class="sub-title">评论家</h2>
+                                <h1 class="title">{{ .Haohuo.Name }}</h1>
+                                <p><span class="stars main-color h-icon" onclick="onStarClick(this.id); return false" id="{{ .Haohuo.Id }}"><i class="fa fa-star"></i>{{ .Haohuo.Favorites }}</span>
+                                <span class="h-price h-icon"><i class="fa fa-yen"></i>{{ .Haohuo.Price }}</span></p>
+                                <p class="second-color font-mini">价格可能随时间波动，请注意分享日期的时效性</p>
                             </div>
                             <div class="col-md-12">
-                                {{range .Comments}}
-                                    <div class="comment">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <img src="{{ .UserAvatar }}" alt="{{ .UserName }}" class="avatar" />
-                                                <a href="/users/{{.UserId}}">{{.UserName}}</a><br/>
-                                                <time class="second-color font-mini">{{ .CreatedAt.Format "2006/01/02" }}</time>
-                                                <p class="font-weight-light" style="white-space: pre-line">{{.Content}}</p>
-                                            </div>
-                                        </div>
+                                <div class="images">
+                                    <img src="{{ .Haohuo.ImageUrl }}" alt="{{ .Name }}">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="description">
+                                    <p class="font-weight-light">{{ .Haohuo.Description }}</p>
+                                </div>
+                                {{if .Tags}}
+                                    <div class="tags">
+                                        {{range .Tags}}
+                                            <a class="badge badge-main" href="/tags/{{.Id}}"><span >{{.Name}}</span></a>
+                                        {{end}}
                                     </div>
                                 {{end}}
                             </div>
                         </div>
-                    </div>
-                {{end}}
-                <div class="row">
-                    <div class="comment-edit">
-                        <div class="col-md-12">
-                            <h4 class="sub-title">回复</h4>
-                            <form id="comment">
-                                <div class="form-group">
-                                    <textarea class="form-control" id="content" name="content" rows="3" minlength="1" maxlength="1024" placeholder="请输入评论"></textarea>
+                        {{ if .Comments }}
+                            <div class="row">
+                                <div class="comments">
+                                    <div class="col-md-12">
+                                        <h4 class="sub-title">评论家</h4>
+                                    </div>
+                                    <div class="col-md-12">
+                                        {{range .Comments}}
+                                            <div class="comment">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <img src="{{ .UserAvatar }}" alt="{{ .UserName }}" class="avatar" />
+                                                        <a href="/users/{{.UserId}}">{{.UserName}}</a><br/>
+                                                        <time class="second-color font-mini">{{ .CreatedAt.Format "2006/01/02" }}</time>
+                                                        <p class="font-weight-light" style="white-space: pre-line">{{.Content}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{end}}
+                                    </div>
                                 </div>
-                                <button type="submit" id="submit-btn" class="btn btn-main">搞里头！</button>
-                            </form>
+                            </div>
+                        {{end}}
+                        <div class="row pb-4">
+                            <div class="comment-edit">
+                                <div class="col-md-12">
+                                    <h4 class="sub-title">回复</h4>
+                                    <form id="comment">
+                                        <div class="form-group">
+                                            <textarea class="form-control" id="content" name="content" rows="3" minlength="1" maxlength="1024" placeholder="请输入评论"></textarea>
+                                        </div>
+                                        <button type="submit" id="submit-btn" class="btn btn-main">搞里头！</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {{ if .FavoriteUsers }}
-                <div class="row">
-                    <div class="favorite-user">
-                        <div class="col-md-12">
-                            <h4 class="sub-title">收藏家</h4>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card user-card">
+                                    <div class="card-body">
+                                        <img class="avatar" src="{{ .User.Avatar }}" alt="{{ .User.Name }}">
+                                    </div>
+                                    <div class="card-body">
+                                        <h3>{{ .User.Name }}</h3>
+                                        <p style="margin-bottom: .5rem">注册于 {{ .User.CreatedAt.Format "2006/01/02" }}</p>
+                                        <p style="margin-bottom: .5rem">{{ .User.Bio}}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-12">
-                            {{range .FavoriteUsers}}
-                                <a href="/users/{{.UserId}}">{{.UserName}}</a>
-                            {{end}}
+                        <div class="row pt-4">
+                            <div class="col-md-12">
+                                <h5 class="sub-title">小破站</h5>
+                            </div>
+                            <div class="col-md-12">
+                                {{template "bilibili"}}
+                            </div>
                         </div>
+                        {{ if .FavoriteUsers }}
+                            <div class="row pt-4">
+                                <div class="favorite-user">
+                                    <div class="col-md-12">
+                                        <h5 class="sub-title">收藏家</h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        {{range .FavoriteUsers}}
+                                            <a href="/users/{{.UserId}}">{{.UserName}}</a>
+                                        {{end}}
+                                    </div>
+                                </div>
+                            </div>
+                        {{end}}
                     </div>
                 </div>
-                {{end}}
             </div>
         </div>
         {{template "footer" }}

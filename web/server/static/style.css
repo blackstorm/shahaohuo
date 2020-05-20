@@ -226,6 +226,17 @@ a.user:hover, a.main-color:hover {
     padding: .4rem;
 }
 
+.user-card {
+    padding-bottom: 0;
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    color: white;
+}
+
+.user-card .avatar {
+    max-width: 64px;
+}
+
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
     .hbox .card {
