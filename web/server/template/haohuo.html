@@ -153,14 +153,18 @@
                                 </div>
                             </div>
                         </div>
+                        {{ if .Videos }}
                         <div class="row pt-4">
                             <div class="col-md-12">
                                 <h5 class="sub-title">小破站</h5>
                             </div>
                             <div class="col-md-12">
-                                {{template "bilibili"}}
+                                {{ range .Videos }}
+                                    {{template "bilibili" .Source }}
+                                {{end}}
                             </div>
                         </div>
+                        {{ end }}
                         {{ if .FavoriteUsers }}
                             <div class="row pt-4">
                                 <div class="favorite-user">

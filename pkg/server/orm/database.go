@@ -28,7 +28,7 @@ func Init(mConfig config.MySQLConfig) {
 		db.DB().SetMaxOpenConns(mConfig.MaxConns)
 		db.DB().SetMaxIdleConns(mConfig.MinConns)
 		if err = db.DB().Ping(); err == nil {
-			if err = db.AutoMigrate(&User{}, &Haohuo{}, &Favorite{}, &Image{}, &Comment{}, &Tag{}, &HaohuoTag{}).Error; err == nil {
+			if err = db.AutoMigrate(&User{}, &Haohuo{}, &Favorite{}, &Image{}, &Comment{}, &Tag{}, &HaohuoTag{}, &Video{}, &Link{}).Error; err == nil {
 				database = db
 			}
 		} else {

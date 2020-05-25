@@ -95,10 +95,22 @@ func Haohuo(c *gin.Context) {
 		}
 	}()
 
+	// videos
+	videosChan := make(chan util.AsyncResult)
+	defer close(videosChan)
+	go func() {
+		viodes := orm.FindVideosByHaohuoId(uriParams.Id)
+		videosChan <- util.AsyncResult{
+			Ret:   viodes,
+			Error: nil,
+		}
+	}()
+
 	u := <-userChannel
 	fus := <-fusChannel
 	cms := <-cmsChannel
 	tgs := <-tgsChannel
+	videos := <-videosChan
 
 	if util.CheckAsyncResultsError(u, fus, cms, tgs) {
 		errorPage(c)
@@ -111,5 +123,6 @@ func Haohuo(c *gin.Context) {
 		"FavoriteUsers": fus.Ret,
 		"Comments":      cms.Ret,
 		"Tags":          tgs.Ret,
+		"Videos":        videos.Ret,
 	})
 }

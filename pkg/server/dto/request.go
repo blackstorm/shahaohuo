@@ -9,3 +9,7 @@ type PatchUserRequest struct {
 	Name   string `json:"name"binding:"max=8,min=1"`
 	Bio    string `json:"bio"binding:"max=128"`
 }
+
+type HaohuoVideoRequest struct {
+	Url string `json:"url"`
+}

@@ -75,6 +75,7 @@ func Server(templatePath, staticPath, appVersion string) *gin.Engine {
 	authorized.PUT("/haohuos/:id", api.CreateOrUpdateHaohuo)
 	authorized.PUT("/haohuos/:id/favorite", api.FavoriteHaohuo)
 	authorized.PUT("/haohuos/:id/comment", api.CommentHaohuo)
+	authorized.PUT("/haohuos/:id/videos", api.AddHaoHuoVideo)
 	authorized.PATCH("/users", api.PatchUser)
 	authorized.POST("/images/upload", api.UploadImage)
 
